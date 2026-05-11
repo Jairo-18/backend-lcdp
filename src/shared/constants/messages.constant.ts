@@ -1,0 +1,9 @@
+export const UNAUTHORIZED_MESSAGE = 'No autorizado';
+export const FORBIDDEN_MESSAGE = 'No tienes permisos para esta acción';
+export const NOT_FOUND_MESSAGE = 'Recurso no encontrado';
+export const INTERNAL_ERROR_MESSAGE = 'Error interno del servidor';
+export const CREATED_MESSAGE = 'Registro creado exitosamente';
+export const UPDATED_MESSAGE = 'Registro actualizado exitosamente';
+export const DELETED_MESSAGE = 'Registro eliminado exitosamente';
+export const DUPLICATED_MESSAGE = 'El registro ya existe';
+export const PASSWORDS_NOT_MATCH = 'Las contraseñas no coinciden';
