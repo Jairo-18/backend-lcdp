@@ -12,6 +12,10 @@ import { join } from 'path';
 import { ApiKeyGuard } from './shared/guards/api-key.guard';
 import { AuthModule } from './auth/auth.module';
 import { OrganizationalModule } from './organizational/organizational.module';
+import { BrandModule } from './brand/brand.module';
+import { CategoryModule } from './category/category.module';
+import { UnitOfMeasureModule } from './unit-of-measure/unit-of-measure.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -47,6 +51,10 @@ import { OrganizationalModule } from './organizational/organizational.module';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     AuthModule,
     OrganizationalModule,
+    BrandModule,
+    CategoryModule,
+    UnitOfMeasureModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [

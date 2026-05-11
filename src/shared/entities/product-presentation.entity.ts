@@ -37,7 +37,9 @@ export class ProductPresentation {
   @Column('varchar', { length: 100, nullable: true })
   sku: string;
 
-  @OneToMany(() => ProductImage, (image) => image.presentation, { cascade: true })
+  @OneToMany(() => ProductImage, (image) => image.presentation, {
+    cascade: true,
+  })
   images: ProductImage[];
 
   @CreateDateColumn({ type: 'timestamp' })

@@ -20,6 +20,11 @@ import { Organizational } from './entities/organizational.entity';
 import { UserRepository } from './repositories/user.repository';
 import { AccessSessionsRepository } from './repositories/accessSessions.repository';
 import { OrganizationalRepository } from './repositories/organizational.repository';
+import { BrandRepository } from './repositories/brand.repository';
+import { CategoryRepository } from './repositories/category.repository';
+import { UnitOfMeasureRepository } from './repositories/unit-of-measure.repository';
+import { ProductRepository } from './repositories/product.repository';
+import { ProductPresentationRepository } from './repositories/product-presentation.repository';
 
 @Module({})
 export class SharedModule {
@@ -113,7 +118,17 @@ export class SharedModule {
           }),
         }),
       ],
-      providers: [RolesGuard, UserRepository, AccessSessionsRepository, OrganizationalRepository],
+      providers: [
+        RolesGuard,
+        UserRepository,
+        AccessSessionsRepository,
+        OrganizationalRepository,
+        BrandRepository,
+        CategoryRepository,
+        UnitOfMeasureRepository,
+        ProductRepository,
+        ProductPresentationRepository,
+      ],
       exports: [
         JwtModule,
         TypeOrmModule,
@@ -121,6 +136,11 @@ export class SharedModule {
         UserRepository,
         AccessSessionsRepository,
         OrganizationalRepository,
+        BrandRepository,
+        CategoryRepository,
+        UnitOfMeasureRepository,
+        ProductRepository,
+        ProductPresentationRepository,
       ],
     };
   }
