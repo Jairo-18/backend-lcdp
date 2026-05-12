@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 
-@Entity({ name: 'AccessSessions' })
+@Entity({ name: 'accessSessions' })
 export class AccessSessions {
   @PrimaryColumn('uuid')
   id: string;
