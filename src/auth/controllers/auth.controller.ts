@@ -21,7 +21,7 @@ export class AuthController {
 
   @Post('/sign-in')
   @SkipApiKey()
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @SignInDocs()
   async signIn(@Body() body: LoginDto): Promise<SignInResponseDto> {
     const data = await this._authUC.login(body);
@@ -37,6 +37,7 @@ export class AuthController {
   }
 
   @Post('refresh-token')
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @RefreshTokenDocs()
   async refreshToken(
     @Body() body: RefreshTokenBodyDto,
@@ -53,6 +54,7 @@ export class AuthController {
 
   @Post('/sign-out')
   @UseGuards(AuthGuard())
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @SignOutDocs()
   async signOut(@Body() body: SignOutBodyDto): Promise<SignOutResponseDto> {
     await this._authUC.signOut(body);
