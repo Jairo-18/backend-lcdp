@@ -1,15 +1,11 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
-  IsArray,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsUUID,
-  ValidateNested,
+  IsArray, IsNotEmpty, IsOptional, IsString, IsUUID, ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { HttpStatus } from '@nestjs/common';
 import { BaseResponseDto } from '../../shared/dtos/response.dto';
+import { PaginationDto, PaginatedResult } from '../../shared/dtos/pagination.dto';
 import { Product } from '../../shared/entities/product.entity';
 
 export class CreatePresentationDto {
@@ -61,6 +57,23 @@ export class CreateProductDto {
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
 
+export class ProductQueryDto extends PaginationDto {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  search?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsUUID()
+  categoryId?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsUUID()
+  brandId?: string;
+}
+
 export class GetProductResponseDto implements BaseResponseDto {
   @ApiProperty({ type: Number, example: HttpStatus.OK })
   statusCode: number;
@@ -73,6 +86,6 @@ export class GetProductsResponseDto implements BaseResponseDto {
   @ApiProperty({ type: Number, example: HttpStatus.OK })
   statusCode: number;
 
-  @ApiProperty({ type: [Product] })
-  data: Product[];
+  @ApiProperty()
+  data: PaginatedResult<Product>;
 }

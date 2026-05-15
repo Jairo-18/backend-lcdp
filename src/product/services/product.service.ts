@@ -2,7 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from '../../shared/entities/product.entity';
 import { ProductRepository } from '../../shared/repositories/product.repository';
 import { ProductPresentationRepository } from '../../shared/repositories/product-presentation.repository';
-import { CreateProductDto, UpdateProductDto } from '../dtos/product.dto';
+import { CreateProductDto, ProductQueryDto, UpdateProductDto } from '../dtos/product.dto';
+import { PaginatedResult } from '../../shared/dtos/pagination.dto';
 
 @Injectable()
 export class ProductService {
@@ -24,11 +25,38 @@ export class ProductService {
     return this._repo.save(product);
   }
 
-  async findAll(): Promise<Product[]> {
-    return this._repo.find({
-      relations: ['category', 'brand', 'presentations', 'presentations.unitOfMeasure'],
-      order: { name: 'ASC' },
-    });
+  async findAll(query: ProductQueryDto): Promise<PaginatedResult<Product>> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const skip = (page - 1) * limit;
+
+    const qb = this._repo
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.brand', 'brand')
+      .leftJoinAndSelect('product.presentations', 'presentations')
+      .leftJoinAndSelect('presentations.unitOfMeasure', 'unitOfMeasure')
+      .orderBy('product.name', 'ASC')
+      .skip(skip)
+      .take(limit);
+
+    if (query.search) {
+      qb.andWhere('LOWER(product.name) LIKE LOWER(:search)', {
+        search: `%${query.search}%`,
+      });
+    }
+
+    if (query.categoryId) {
+      qb.andWhere('product.categoryId = :categoryId', { categoryId: query.categoryId });
+    }
+
+    if (query.brandId) {
+      qb.andWhere('product.brandId = :brandId', { brandId: query.brandId });
+    }
+
+    const [items, total] = await qb.getManyAndCount();
+
+    return { items, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
   async findOne(id: string): Promise<Product> {

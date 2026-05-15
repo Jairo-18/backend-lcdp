@@ -1,13 +1,13 @@
 import {
   Body, Controller, Delete, Get, HttpStatus,
-  Param, ParseUUIDPipe, Patch, Post, UseGuards,
+  Param, ParseUUIDPipe, Patch, Post, Query, UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { ProductUC } from '../useCases/product.UC';
 import {
-  CreateProductDto, UpdateProductDto,
-  GetProductResponseDto, GetProductsResponseDto,
+  CreateProductDto, GetProductResponseDto, GetProductsResponseDto,
+  ProductQueryDto, UpdateProductDto,
 } from '../dtos/product.dto';
 import {
   CreatedRecordResponseDto,
@@ -30,9 +30,9 @@ export class ProductController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Listar productos con categoría, marca y presentaciones' })
-  async findAll(): Promise<GetProductsResponseDto> {
-    return { statusCode: HttpStatus.OK, data: await this._uc.findAll() };
+  @ApiOperation({ summary: 'Listar productos paginados con filtros opcionales (search, categoryId, brandId)' })
+  async findAll(@Query() query: ProductQueryDto): Promise<GetProductsResponseDto> {
+    return { statusCode: HttpStatus.OK, data: await this._uc.findAll(query) };
   }
 
   @Get(':id')
