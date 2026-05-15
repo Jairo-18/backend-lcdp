@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ImageVariant } from '../dtos/image-variant.dto';
 
 @Entity({ name: 'brands' })
 export class Brand {
@@ -16,6 +17,9 @@ export class Brand {
 
   @Column('varchar', { length: 50, unique: true })
   code: string;
+
+  @Column('jsonb', { default: [] })
+  images: ImageVariant[];
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

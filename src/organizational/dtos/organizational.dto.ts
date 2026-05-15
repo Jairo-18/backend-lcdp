@@ -1,5 +1,7 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ImageVariantDto } from '../../shared/dtos/image-variant.dto';
 import { Organizational } from '../../shared/entities/organizational.entity';
 import { Category } from '../../shared/entities/category.entity';
 import { UnitOfMeasure } from '../../shared/entities/unit-of-measure.entity';
@@ -47,6 +49,13 @@ export class CreateOrganizationalDto {
   @ApiProperty({ required: false }) @IsOptional() @IsString() metaTitle?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() metaDescription?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() metaKeywords?: string;
+
+  @ApiProperty({ required: false, type: [ImageVariantDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ImageVariantDto)
+  bannerImages?: ImageVariantDto[];
 }
 
 export class UpdateOrganizationalDto extends PartialType(CreateOrganizationalDto) {

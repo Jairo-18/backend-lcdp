@@ -1,8 +1,10 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 import { HttpStatus } from '@nestjs/common';
 import { BaseResponseDto } from '../../shared/dtos/response.dto';
 import { Category } from '../../shared/entities/category.entity';
+import { ImageVariantDto } from '../../shared/dtos/image-variant.dto';
 
 export class CreateCategoryDto {
   @ApiProperty({ example: 'Pinturas' })
@@ -14,6 +16,13 @@ export class CreateCategoryDto {
   @IsString()
   @IsNotEmpty()
   code: string;
+
+  @ApiProperty({ required: false, type: [ImageVariantDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ImageVariantDto)
+  images?: ImageVariantDto[];
 }
 
 export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {}

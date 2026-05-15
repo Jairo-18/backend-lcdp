@@ -16,6 +16,7 @@ import { BrandModule } from './brand/brand.module';
 import { CategoryModule } from './category/category.module';
 import { UnitOfMeasureModule } from './unit-of-measure/unit-of-measure.module';
 import { ProductModule } from './product/product.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { ProductModule } from './product/product.module';
     CategoryModule,
     UnitOfMeasureModule,
     ProductModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [

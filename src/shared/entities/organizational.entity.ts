@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ImageVariant } from '../dtos/image-variant.dto';
 
 @Entity({ name: 'organizational' })
 export class Organizational {
@@ -111,6 +112,9 @@ export class Organizational {
 
   @Column('varchar', { length: 500, nullable: true })
   metaKeywords?: string;
+
+  @Column('jsonb', { default: [] })
+  bannerImages: ImageVariant[];
 
   @Column({ type: 'boolean', default: true })
   status: boolean;
