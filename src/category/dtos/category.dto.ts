@@ -5,6 +5,7 @@ import { HttpStatus } from '@nestjs/common';
 import { BaseResponseDto } from '../../shared/dtos/response.dto';
 import { Category } from '../../shared/entities/category.entity';
 import { ImageVariantDto } from '../../shared/dtos/image-variant.dto';
+import { PaginationDto, PaginatedResult } from '../../shared/dtos/pagination.dto';
 
 export class CreateCategoryDto {
   @ApiProperty({ example: 'Pinturas' })
@@ -27,6 +28,13 @@ export class CreateCategoryDto {
 
 export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {}
 
+export class CategoryQueryDto extends PaginationDto {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  search?: string;
+}
+
 export class GetCategoryResponseDto implements BaseResponseDto {
   @ApiProperty({ type: Number, example: HttpStatus.OK })
   statusCode: number;
@@ -39,6 +47,6 @@ export class GetCategoriesResponseDto implements BaseResponseDto {
   @ApiProperty({ type: Number, example: HttpStatus.OK })
   statusCode: number;
 
-  @ApiProperty({ type: [Category] })
-  data: Category[];
+  @ApiProperty()
+  data: PaginatedResult<Category>;
 }

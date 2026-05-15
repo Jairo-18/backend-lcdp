@@ -1,11 +1,11 @@
 import {
   Body, Controller, Delete, Get, HttpStatus,
-  Param, ParseUUIDPipe, Patch, Post, UseGuards,
+  Param, ParseUUIDPipe, Patch, Post, Query, UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { CategoryUC } from '../useCases/category.UC';
-import { CreateCategoryDto, UpdateCategoryDto, GetCategoryResponseDto, GetCategoriesResponseDto } from '../dtos/category.dto';
+import { CategoryQueryDto, CreateCategoryDto, UpdateCategoryDto, GetCategoryResponseDto, GetCategoriesResponseDto } from '../dtos/category.dto';
 import {
   CreatedRecordResponseDto,
   DeleteRecordResponseDto,
@@ -27,9 +27,9 @@ export class CategoryController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Listar categorías' })
-  async findAll(): Promise<GetCategoriesResponseDto> {
-    return { statusCode: HttpStatus.OK, data: await this._uc.findAll() };
+  @ApiOperation({ summary: 'Listar categorías paginadas (search opcional)' })
+  async findAll(@Query() query: CategoryQueryDto): Promise<GetCategoriesResponseDto> {
+    return { statusCode: HttpStatus.OK, data: await this._uc.findAll(query) };
   }
 
   @Get(':id')

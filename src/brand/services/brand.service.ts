@@ -1,7 +1,8 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { Brand } from '../../shared/entities/brand.entity';
 import { BrandRepository } from '../../shared/repositories/brand.repository';
-import { CreateBrandDto, UpdateBrandDto } from '../dtos/brand.dto';
+import { BrandQueryDto, CreateBrandDto, UpdateBrandDto } from '../dtos/brand.dto';
+import { PaginatedResult } from '../../shared/dtos/pagination.dto';
 
 @Injectable()
 export class BrandService {
@@ -13,8 +14,23 @@ export class BrandService {
     return this._repo.save(this._repo.create(dto));
   }
 
-  async findAll(): Promise<Brand[]> {
-    return this._repo.find({ order: { name: 'ASC' } });
+  async findAll(query: BrandQueryDto): Promise<PaginatedResult<Brand>> {
+    const page  = query.page  ?? 1;
+    const limit = query.limit ?? 10;
+    const skip  = (page - 1) * limit;
+
+    const qb = this._repo
+      .createQueryBuilder('brand')
+      .orderBy('brand.name', 'ASC')
+      .skip(skip)
+      .take(limit);
+
+    if (query.search) {
+      qb.andWhere('LOWER(brand.name) LIKE LOWER(:s)', { s: `%${query.search}%` });
+    }
+
+    const [items, total] = await qb.getManyAndCount();
+    return { items, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
   async findOne(id: string): Promise<Brand> {

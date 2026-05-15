@@ -1,11 +1,11 @@
 import {
   Body, Controller, Delete, Get, HttpStatus,
-  Param, ParseUUIDPipe, Patch, Post, UseGuards,
+  Param, ParseUUIDPipe, Patch, Post, Query, UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { BrandUC } from '../useCases/brand.UC';
-import { CreateBrandDto, UpdateBrandDto, GetBrandResponseDto, GetBrandsResponseDto } from '../dtos/brand.dto';
+import { BrandQueryDto, CreateBrandDto, UpdateBrandDto, GetBrandResponseDto, GetBrandsResponseDto } from '../dtos/brand.dto';
 import {
   CreatedRecordResponseDto,
   DeleteRecordResponseDto,
@@ -27,9 +27,9 @@ export class BrandController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Listar marcas' })
-  async findAll(): Promise<GetBrandsResponseDto> {
-    return { statusCode: HttpStatus.OK, data: await this._uc.findAll() };
+  @ApiOperation({ summary: 'Listar marcas paginadas (search opcional)' })
+  async findAll(@Query() query: BrandQueryDto): Promise<GetBrandsResponseDto> {
+    return { statusCode: HttpStatus.OK, data: await this._uc.findAll(query) };
   }
 
   @Get(':id')

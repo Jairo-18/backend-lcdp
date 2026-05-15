@@ -1,7 +1,8 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { Category } from '../../shared/entities/category.entity';
 import { CategoryRepository } from '../../shared/repositories/category.repository';
-import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/category.dto';
+import { CategoryQueryDto, CreateCategoryDto, UpdateCategoryDto } from '../dtos/category.dto';
+import { PaginatedResult } from '../../shared/dtos/pagination.dto';
 
 @Injectable()
 export class CategoryService {
@@ -13,8 +14,23 @@ export class CategoryService {
     return this._repo.save(this._repo.create(dto));
   }
 
-  async findAll(): Promise<Category[]> {
-    return this._repo.find({ order: { name: 'ASC' } });
+  async findAll(query: CategoryQueryDto): Promise<PaginatedResult<Category>> {
+    const page  = query.page  ?? 1;
+    const limit = query.limit ?? 10;
+    const skip  = (page - 1) * limit;
+
+    const qb = this._repo
+      .createQueryBuilder('category')
+      .orderBy('category.name', 'ASC')
+      .skip(skip)
+      .take(limit);
+
+    if (query.search) {
+      qb.andWhere('LOWER(category.name) LIKE LOWER(:s)', { s: `%${query.search}%` });
+    }
+
+    const [items, total] = await qb.getManyAndCount();
+    return { items, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
   async findOne(id: string): Promise<Category> {
