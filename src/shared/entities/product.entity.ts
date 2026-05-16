@@ -11,11 +11,12 @@ import {
 import { Category } from './category.entity';
 import { Brand } from './brand.entity';
 import { ProductPresentation } from './product-presentation.entity';
+import { TaxType } from './tax-type.entity';
 
 @Entity({ name: 'products' })
 export class Product {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column('varchar', { length: 200 })
   name: string;
@@ -27,15 +28,28 @@ export class Product {
   @JoinColumn({ name: 'categoryId' })
   category: Category;
 
-  @Column('uuid')
-  categoryId: string;
+  @Column('int')
+  categoryId: number;
 
   @ManyToOne(() => Brand, { nullable: false })
   @JoinColumn({ name: 'brandId' })
   brand: Brand;
 
-  @Column('uuid')
-  brandId: string;
+  @Column('int')
+  brandId: number;
+
+  @Column('decimal', { precision: 12, scale: 2, nullable: true })
+  priceSale: number;
+
+  @ManyToOne(() => TaxType, { nullable: true })
+  @JoinColumn({ name: 'taxTypeId' })
+  taxType: TaxType;
+
+  @Column('int', { nullable: true })
+  taxTypeId: number;
+
+  @Column('boolean', { default: true })
+  isActive: boolean;
 
   @Column('jsonb', { nullable: true })
   technicalSheet: Record<string, string | number | boolean>;

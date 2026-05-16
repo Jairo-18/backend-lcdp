@@ -33,13 +33,13 @@ export class CategoryService {
     return { items, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
-  async findOne(id: string): Promise<Category> {
+  async findOne(id: number): Promise<Category> {
     const category = await this._repo.findOne({ where: { id } });
     if (!category) throw new NotFoundException('Categoría no encontrada');
     return category;
   }
 
-  async update(id: string, dto: UpdateCategoryDto): Promise<Category> {
+  async update(id: number, dto: UpdateCategoryDto): Promise<Category> {
     const category = await this.findOne(id);
     if (dto.code && dto.code !== category.code) {
       const existing = await this._repo.findOne({ where: { code: dto.code } });
@@ -49,7 +49,7 @@ export class CategoryService {
     return this._repo.save(category);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: number): Promise<void> {
     const category = await this.findOne(id);
     await this._repo.remove(category);
   }

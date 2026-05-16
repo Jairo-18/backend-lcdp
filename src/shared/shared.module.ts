@@ -17,6 +17,8 @@ import { Product } from './entities/product.entity';
 import { ProductPresentation } from './entities/product-presentation.entity';
 import { ProductImage } from './entities/product-image.entity';
 import { Organizational } from './entities/organizational.entity';
+import { TaxType } from './entities/tax-type.entity';
+import { TaxTypeRepository } from './repositories/tax-type.repository';
 import { UserRepository } from './repositories/user.repository';
 import { AccessSessionsRepository } from './repositories/accessSessions.repository';
 import { OrganizationalRepository } from './repositories/organizational.repository';
@@ -85,6 +87,7 @@ export class SharedModule {
           ProductPresentation,
           ProductImage,
           Organizational,
+          TaxType,
         ]),
 
         PassportModule,
@@ -128,6 +131,7 @@ export class SharedModule {
         UnitOfMeasureRepository,
         ProductRepository,
         ProductPresentationRepository,
+        TaxTypeRepository,
       ],
       exports: [
         JwtModule,
@@ -141,6 +145,7 @@ export class SharedModule {
         UnitOfMeasureRepository,
         ProductRepository,
         ProductPresentationRepository,
+        TaxTypeRepository,
       ],
     };
   }

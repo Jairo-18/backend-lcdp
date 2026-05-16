@@ -1,6 +1,6 @@
 import {
   Body, Controller, Delete, Get, HttpStatus,
-  Param, ParseUUIDPipe, Patch, Post, Query, UseGuards,
+  Param, ParseIntPipe, Patch, Post, Query, UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -37,14 +37,14 @@ export class ProductController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Obtener producto por ID con todas sus relaciones e imágenes' })
-  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<GetProductResponseDto> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<GetProductResponseDto> {
     return { statusCode: HttpStatus.OK, data: await this._uc.findOne(id) };
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar producto (si envías presentations reemplaza las existentes)' })
   async update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateProductDto,
   ): Promise<UpdateRecordResponseDto> {
     await this._uc.update(id, dto);
@@ -53,7 +53,7 @@ export class ProductController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar producto y sus presentaciones' })
-  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<DeleteRecordResponseDto> {
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<DeleteRecordResponseDto> {
     await this._uc.remove(id);
     return { statusCode: HttpStatus.OK, message: 'Producto eliminado' };
   }

@@ -33,13 +33,13 @@ export class BrandService {
     return { items, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
-  async findOne(id: string): Promise<Brand> {
+  async findOne(id: number): Promise<Brand> {
     const brand = await this._repo.findOne({ where: { id } });
     if (!brand) throw new NotFoundException('Marca no encontrada');
     return brand;
   }
 
-  async update(id: string, dto: UpdateBrandDto): Promise<Brand> {
+  async update(id: number, dto: UpdateBrandDto): Promise<Brand> {
     const brand = await this.findOne(id);
     if (dto.code && dto.code !== brand.code) {
       const existing = await this._repo.findOne({ where: { code: dto.code } });
@@ -49,7 +49,7 @@ export class BrandService {
     return this._repo.save(brand);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: number): Promise<void> {
     const brand = await this.findOne(id);
     await this._repo.remove(brand);
   }

@@ -1,6 +1,6 @@
 import {
   Body, Controller, Delete, Get, HttpStatus,
-  Param, ParseUUIDPipe, Patch, Post, Query, UseGuards,
+  Param, ParseIntPipe, Patch, Post, Query, UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -34,14 +34,14 @@ export class CategoryController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Obtener categoría por ID' })
-  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<GetCategoryResponseDto> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<GetCategoryResponseDto> {
     return { statusCode: HttpStatus.OK, data: await this._uc.findOne(id) };
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar categoría' })
   async update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateCategoryDto,
   ): Promise<UpdateRecordResponseDto> {
     await this._uc.update(id, dto);
@@ -50,7 +50,7 @@ export class CategoryController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar categoría' })
-  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<DeleteRecordResponseDto> {
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<DeleteRecordResponseDto> {
     await this._uc.remove(id);
     return { statusCode: HttpStatus.OK, message: 'Categoría eliminada' };
   }

@@ -1,6 +1,6 @@
 import {
   Body, Controller, Delete, Get, HttpStatus,
-  Param, ParseUUIDPipe, Patch, Post, UseGuards,
+  Param, ParseIntPipe, Patch, Post, UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -37,14 +37,14 @@ export class UnitOfMeasureController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Obtener unidad de medida por ID' })
-  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<GetUnitOfMeasureResponseDto> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<GetUnitOfMeasureResponseDto> {
     return { statusCode: HttpStatus.OK, data: await this._uc.findOne(id) };
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar unidad de medida' })
   async update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateUnitOfMeasureDto,
   ): Promise<UpdateRecordResponseDto> {
     await this._uc.update(id, dto);
@@ -53,7 +53,7 @@ export class UnitOfMeasureController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar unidad de medida' })
-  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<DeleteRecordResponseDto> {
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<DeleteRecordResponseDto> {
     await this._uc.remove(id);
     return { statusCode: HttpStatus.OK, message: 'Unidad de medida eliminada' };
   }

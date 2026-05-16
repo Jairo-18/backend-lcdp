@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
-  IsArray, IsNotEmpty, IsOptional, IsString, IsUUID, ValidateNested,
+  IsArray, IsBoolean, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Min, ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { HttpStatus } from '@nestjs/common';
@@ -9,9 +9,11 @@ import { PaginationDto, PaginatedResult } from '../../shared/dtos/pagination.dto
 import { Product } from '../../shared/entities/product.entity';
 
 export class CreatePresentationDto {
-  @ApiProperty({ example: 'uuid-unidad-de-medida' })
-  @IsUUID()
-  unitOfMeasureId: string;
+  @ApiProperty({ example: 1 })
+  @IsInt()
+  @IsPositive()
+  @Type(() => Number)
+  unitOfMeasureId: number;
 
   @ApiProperty({ example: 'PCK-VK-1G', required: false })
   @IsOptional()
@@ -30,13 +32,36 @@ export class CreateProductDto {
   @IsString()
   description?: string;
 
-  @ApiProperty({ example: 'uuid-categoria' })
-  @IsUUID()
-  categoryId: string;
+  @ApiProperty({ example: 1 })
+  @IsInt()
+  @IsPositive()
+  @Type(() => Number)
+  categoryId: number;
 
-  @ApiProperty({ example: 'uuid-marca' })
-  @IsUUID()
-  brandId: string;
+  @ApiProperty({ example: 1 })
+  @IsInt()
+  @IsPositive()
+  @Type(() => Number)
+  brandId: number;
+
+  @ApiProperty({ required: false, example: 45900 })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Type(() => Number)
+  priceSale?: number;
+
+  @ApiProperty({ required: false, example: 1 })
+  @IsOptional()
+  @IsInt()
+  @IsPositive()
+  @Type(() => Number)
+  taxTypeId?: number;
+
+  @ApiProperty({ required: false, default: true })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 
   @ApiProperty({ required: false, example: { rendimiento: '40m² / galón', dilución: '10-15%' } })
   @IsOptional()
@@ -65,13 +90,17 @@ export class ProductQueryDto extends PaginationDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsUUID()
-  categoryId?: string;
+  @IsInt()
+  @IsPositive()
+  @Type(() => Number)
+  categoryId?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsUUID()
-  brandId?: string;
+  @IsInt()
+  @IsPositive()
+  @Type(() => Number)
+  brandId?: number;
 }
 
 export class GetProductResponseDto implements BaseResponseDto {

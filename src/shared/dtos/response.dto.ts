@@ -9,7 +9,7 @@ export interface BaseResponseDto {
 }
 
 export interface ObjectCreatedResponseDto {
-  rowId: string;
+  rowId: number | string;
 }
 
 export class CreatedRecordResponseDto implements BaseResponseDto {
@@ -19,7 +19,7 @@ export class CreatedRecordResponseDto implements BaseResponseDto {
   @ApiProperty({ type: String, example: 'Registro creado' })
   message: string;
 
-  @ApiProperty({ type: Object, example: { rowId: 'uuid' } })
+  @ApiProperty({ type: Object, example: { rowId: 1 } })
   data: ObjectCreatedResponseDto;
 }
 

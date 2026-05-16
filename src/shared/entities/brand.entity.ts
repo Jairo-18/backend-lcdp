@@ -9,8 +9,8 @@ import { ImageVariant } from '../dtos/image-variant.dto';
 
 @Entity({ name: 'brands' })
 export class Brand {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column('varchar', { length: 100 })
   name: string;

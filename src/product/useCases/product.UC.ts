@@ -8,7 +8,7 @@ export class ProductUC {
 
   async create(dto: CreateProductDto) { return this._productService.create(dto); }
   async findAll(query: ProductQueryDto) { return this._productService.findAll(query); }
-  async findOne(id: string) { return this._productService.findOne(id); }
-  async update(id: string, dto: UpdateProductDto) { return this._productService.update(id, dto); }
-  async remove(id: string) { return this._productService.remove(id); }
+  async findOne(id: number) { return this._productService.findOne(id); }
+  async update(id: number, dto: UpdateProductDto) { return this._productService.update(id, dto); }
+  async remove(id: number) { return this._productService.remove(id); }
 }

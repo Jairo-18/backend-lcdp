@@ -8,7 +8,7 @@ export class BrandUC {
 
   async create(dto: CreateBrandDto)                     { return this._brandService.create(dto); }
   async findAll(query: BrandQueryDto)                   { return this._brandService.findAll(query); }
-  async findOne(id: string)                             { return this._brandService.findOne(id); }
-  async update(id: string, dto: UpdateBrandDto)         { return this._brandService.update(id, dto); }
-  async remove(id: string)                              { return this._brandService.remove(id); }
+  async findOne(id: number)                             { return this._brandService.findOne(id); }
+  async update(id: number, dto: UpdateBrandDto)         { return this._brandService.update(id, dto); }
+  async remove(id: number)                              { return this._brandService.remove(id); }
 }

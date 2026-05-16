@@ -8,7 +8,7 @@ export class UnitOfMeasureUC {
 
   async create(dto: CreateUnitOfMeasureDto) { return this._service.create(dto); }
   async findAll() { return this._service.findAll(); }
-  async findOne(id: string) { return this._service.findOne(id); }
-  async update(id: string, dto: UpdateUnitOfMeasureDto) { return this._service.update(id, dto); }
-  async remove(id: string) { return this._service.remove(id); }
+  async findOne(id: number) { return this._service.findOne(id); }
+  async update(id: number, dto: UpdateUnitOfMeasureDto) { return this._service.update(id, dto); }
+  async remove(id: number) { return this._service.remove(id); }
 }

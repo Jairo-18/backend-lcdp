@@ -14,8 +14,8 @@ import { ProductImage } from './product-image.entity';
 
 @Entity({ name: 'product_presentations' })
 export class ProductPresentation {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @ManyToOne(() => Product, (product) => product.presentations, {
     nullable: false,
@@ -24,15 +24,15 @@ export class ProductPresentation {
   @JoinColumn({ name: 'productId' })
   product: Product;
 
-  @Column('uuid')
-  productId: string;
+  @Column('int')
+  productId: number;
 
   @ManyToOne(() => UnitOfMeasure, { nullable: false })
   @JoinColumn({ name: 'unitOfMeasureId' })
   unitOfMeasure: UnitOfMeasure;
 
-  @Column('uuid')
-  unitOfMeasureId: string;
+  @Column('int')
+  unitOfMeasureId: number;
 
   @Column('varchar', { length: 100, nullable: true })
   sku: string;

@@ -17,13 +17,13 @@ export class UnitOfMeasureService {
     return this._repo.find({ order: { name: 'ASC' } });
   }
 
-  async findOne(id: string): Promise<UnitOfMeasure> {
+  async findOne(id: number): Promise<UnitOfMeasure> {
     const unit = await this._repo.findOne({ where: { id } });
     if (!unit) throw new NotFoundException('Unidad de medida no encontrada');
     return unit;
   }
 
-  async update(id: string, dto: UpdateUnitOfMeasureDto): Promise<UnitOfMeasure> {
+  async update(id: number, dto: UpdateUnitOfMeasureDto): Promise<UnitOfMeasure> {
     const unit = await this.findOne(id);
     if (dto.code && dto.code !== unit.code) {
       const existing = await this._repo.findOne({ where: { code: dto.code } });
@@ -33,7 +33,7 @@ export class UnitOfMeasureService {
     return this._repo.save(unit);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: number): Promise<void> {
     const unit = await this.findOne(id);
     await this._repo.remove(unit);
   }

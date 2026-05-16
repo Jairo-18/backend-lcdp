@@ -34,6 +34,7 @@ export class ProductService {
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.category', 'category')
       .leftJoinAndSelect('product.brand', 'brand')
+      .leftJoinAndSelect('product.taxType', 'taxType')
       .leftJoinAndSelect('product.presentations', 'presentations')
       .leftJoinAndSelect('presentations.unitOfMeasure', 'unitOfMeasure')
       .orderBy('product.name', 'ASC')
@@ -59,12 +60,13 @@ export class ProductService {
     return { items, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
-  async findOne(id: string): Promise<Product> {
+  async findOne(id: number): Promise<Product> {
     const product = await this._repo.findOne({
       where: { id },
       relations: [
         'category',
         'brand',
+        'taxType',
         'presentations',
         'presentations.unitOfMeasure',
         'presentations.images',
@@ -74,7 +76,7 @@ export class ProductService {
     return product;
   }
 
-  async update(id: string, dto: UpdateProductDto): Promise<Product> {
+  async update(id: number, dto: UpdateProductDto): Promise<Product> {
     const product = await this.findOne(id);
     const { presentations, ...productData } = dto;
     Object.assign(product, productData);
@@ -89,7 +91,7 @@ export class ProductService {
     return this._repo.save(product);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: number): Promise<void> {
     const product = await this.findOne(id);
     await this._repo.remove(product);
   }

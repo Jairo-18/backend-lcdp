@@ -10,8 +10,8 @@ import { ProductPresentation } from './product-presentation.entity';
 
 @Entity({ name: 'product_images' })
 export class ProductImage {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @ManyToOne(() => ProductPresentation, (presentation) => presentation.images, {
     nullable: false,
@@ -20,8 +20,8 @@ export class ProductImage {
   @JoinColumn({ name: 'presentationId' })
   presentation: ProductPresentation;
 
-  @Column('uuid')
-  presentationId: string;
+  @Column('int')
+  presentationId: number;
 
   @Column('varchar', { length: 500 })
   url: string;

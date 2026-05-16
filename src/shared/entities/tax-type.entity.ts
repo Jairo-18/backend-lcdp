@@ -6,15 +6,15 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'units_of_measure' })
-export class UnitOfMeasure {
+@Entity({ name: 'tax_types' })
+export class TaxType {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column('varchar', { length: 100 })
   name: string;
 
-  @Column('varchar', { length: 20, unique: true })
+  @Column('varchar', { length: 50, unique: true })
   code: string;
 
   @CreateDateColumn({ type: 'timestamp' })
