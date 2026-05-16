@@ -1,10 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
-<<<<<<< HEAD
-  IsArray, IsBoolean, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Min, ValidateNested,
-=======
-  IsArray, IsIn, IsNotEmpty, IsOptional, IsString, IsUUID, ValidateNested,
->>>>>>> 1dbad030fa5fb51a028da0c43c19f0e9debeb460
+  IsArray, IsBoolean, IsIn, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Min, ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { HttpStatus } from '@nestjs/common';
@@ -101,14 +97,10 @@ export class ProductQueryDto extends PaginationDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-<<<<<<< HEAD
   @IsInt()
   @IsPositive()
   @Type(() => Number)
   brandId?: number;
-=======
-  @IsUUID()
-  brandId?: string;
 
   @ApiProperty({ required: false, enum: ['name', 'createdAt'], default: 'name' })
   @IsOptional()
@@ -119,7 +111,6 @@ export class ProductQueryDto extends PaginationDto {
   @IsOptional()
   @IsIn(['ASC', 'DESC'])
   order?: 'ASC' | 'DESC';
->>>>>>> 1dbad030fa5fb51a028da0c43c19f0e9debeb460
 }
 
 export class GetProductResponseDto implements BaseResponseDto {
