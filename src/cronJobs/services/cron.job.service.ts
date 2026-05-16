@@ -13,9 +13,10 @@ export class CronJobService {
     private readonly _configService: ConfigService,
   ) {}
 
-  // Cambiar a CronExpression.EVERY_DAY_AT_MIDNIGHT cuando se suba a prod
-  @Cron('* * * * *')
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handleDailyBackup() {
+    if (this._configService.get<string>('app.env') !== 'production') return;
+
     if (this.isBackupRunning) {
       this.logger.warn('Backup ya en ejecución, se omite esta iteración');
       return;

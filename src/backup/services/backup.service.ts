@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { ZipArchive } = require('archiver');
+import archiver from 'archiver';
 import * as path from 'path';
 import * as fs from 'fs';
 import { GoogleDriveService } from './google-drive.service';
@@ -17,12 +16,12 @@ export class BackupService {
   ) {}
 
   async createBackupStream(): Promise<{
-    archive: any;
+    archive: archiver.Archiver;
     filename: string;
   }> {
     const sqlDump = await this.generateSqlDump();
 
-    const archive = new ZipArchive({ zlib: { level: 9 } });
+    const archive = archiver('zip', { zlib: { level: 9 } });
 
     const filename = `lcdp-backup-${new Date().toISOString().replace(/[:.]/g, '-')}.zip`;
 
