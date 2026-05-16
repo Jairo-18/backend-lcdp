@@ -30,6 +30,9 @@ export class ProductService {
     const limit = query.limit ?? 10;
     const skip = (page - 1) * limit;
 
+    const orderCol = query.orderBy === 'createdAt' ? 'product.createdAt' : 'product.name';
+    const orderDir = query.order ?? 'ASC';
+
     const qb = this._repo
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.category', 'category')
@@ -37,7 +40,8 @@ export class ProductService {
       .leftJoinAndSelect('product.taxType', 'taxType')
       .leftJoinAndSelect('product.presentations', 'presentations')
       .leftJoinAndSelect('presentations.unitOfMeasure', 'unitOfMeasure')
-      .orderBy('product.name', 'ASC')
+      .leftJoinAndSelect('presentations.images', 'images')
+      .orderBy(orderCol, orderDir)
       .skip(skip)
       .take(limit);
 
