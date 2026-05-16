@@ -1,10 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
-<<<<<<< HEAD
-  IsArray, IsBoolean, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Min, ValidateNested,
-=======
-  IsArray, IsIn, IsNotEmpty, IsOptional, IsString, IsUUID, ValidateNested,
->>>>>>> 1dbad030fa5fb51a028da0c43c19f0e9debeb460
+  IsArray, IsBoolean, IsIn, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Min, ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { HttpStatus } from '@nestjs/common';
