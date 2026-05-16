@@ -17,6 +17,9 @@ import { CategoryModule } from './category/category.module';
 import { UnitOfMeasureModule } from './unit-of-measure/unit-of-measure.module';
 import { ProductModule } from './product/product.module';
 import { UploadModule } from './upload/upload.module';
+import { BackupModule } from './backup/backup.module';
+import { CronJobModule } from './cronJobs/cron.job.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -57,6 +60,9 @@ import { UploadModule } from './upload/upload.module';
     UnitOfMeasureModule,
     ProductModule,
     UploadModule,
+    BackupModule,
+    ScheduleModule.forRoot(),
+    CronJobModule,
   ],
   controllers: [AppController],
   providers: [
