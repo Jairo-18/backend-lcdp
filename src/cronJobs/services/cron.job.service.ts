@@ -13,7 +13,7 @@ export class CronJobService {
     private readonly _configService: ConfigService,
   ) {}
 
-  @Cron('* * * * *')
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handleDailyBackup() {
     if (this._configService.get<string>('app.env') !== 'production') return;
 
