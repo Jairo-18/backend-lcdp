@@ -20,6 +20,7 @@ import {
   PaginatedResult,
 } from '../../shared/dtos/pagination.dto';
 import { Product } from '../../shared/entities/product.entity';
+import { ImageVariantDto } from '../../shared/dtos/image-variant.dto';
 
 export class CreatePresentationDto {
   @ApiProperty({ example: 1 })
@@ -32,6 +33,13 @@ export class CreatePresentationDto {
   @IsOptional()
   @IsString()
   sku?: string;
+
+  @ApiProperty({ type: [ImageVariantDto], required: false })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ImageVariantDto)
+  images?: ImageVariantDto[];
 }
 
 export class CreateProductDto {
@@ -39,6 +47,11 @@ export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  @ApiProperty({ required: false, example: 'KOR-VK1-BL' })
+  @IsOptional()
+  @IsString()
+  code?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
