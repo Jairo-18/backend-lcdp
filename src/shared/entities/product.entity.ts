@@ -21,9 +21,6 @@ export class Product {
   @Column('varchar', { length: 200 })
   name: string;
 
-  @Column('varchar', { length: 100, nullable: true })
-  code: string;
-
   @Column('text', { nullable: true })
   description: string;
 

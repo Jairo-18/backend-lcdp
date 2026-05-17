@@ -8,11 +8,10 @@ import { ProductRepository } from '../shared/repositories/product.repository';
 import { ProductPresentationRepository } from '../shared/repositories/product-presentation.repository';
 import { Product } from '../shared/entities/product.entity';
 import { ProductPresentation } from '../shared/entities/product-presentation.entity';
-import { ProductImage } from '../shared/entities/product-image.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, ProductPresentation, ProductImage]),
+    TypeOrmModule.forFeature([Product, ProductPresentation]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   controllers: [ProductController],

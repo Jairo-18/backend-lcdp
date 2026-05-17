@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from '../../shared/entities/product.entity';
-import { ProductImage } from '../../shared/entities/product-image.entity';
 import { ProductRepository } from '../../shared/repositories/product.repository';
 import { ProductPresentationRepository } from '../../shared/repositories/product-presentation.repository';
 import { CreateProductDto, ProductQueryDto, UpdateProductDto } from '../dtos/product.dto';
@@ -18,16 +17,9 @@ export class ProductService {
     const product = this._repo.create(productData);
 
     if (presentations?.length) {
-      product.presentations = presentations.map((p) => {
-        const { images, ...presData } = p;
-        const pres = this._presentationRepo.create(presData);
-        if (images?.length) {
-          pres.images = images.map((variants, order) =>
-            Object.assign(new ProductImage(), { variants, order }),
-          );
-        }
-        return pres;
-      });
+      product.presentations = presentations.map((p) =>
+        this._presentationRepo.create(p),
+      );
     }
 
     return this._repo.save(product);
@@ -95,16 +87,9 @@ export class ProductService {
 
     if (presentations !== undefined) {
       await this._presentationRepo.delete({ productId: id });
-      product.presentations = presentations.map((p) => {
-        const { images, ...presData } = p;
-        const pres = this._presentationRepo.create({ ...presData, productId: id });
-        if (images?.length) {
-          pres.images = images.map((variants, order) =>
-            Object.assign(new ProductImage(), { variants, order }),
-          );
-        }
-        return pres;
-      });
+      product.presentations = presentations.map((p) =>
+        this._presentationRepo.create({ ...p, productId: id }),
+      );
     }
 
     return this._repo.save(product);
