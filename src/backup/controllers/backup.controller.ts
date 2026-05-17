@@ -3,17 +3,13 @@ import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { BackupUC } from '../useCases/backup.uc';
-import { Roles } from '../../shared/decorators/roles.decorator';
-import { RolesGuard } from '../../shared/guards/roles.guard';
-import { RolesUser } from '../../shared/roles/RolesUser.enum';
 import { SkipApiKey } from '../../shared/decorators/skip-api-key.decorator';
 
 @ApiBearerAuth()
 @Controller('backup')
 @ApiTags('Backup')
 @SkipApiKey()
-@UseGuards(AuthGuard(), RolesGuard)
-@Roles(RolesUser.ADMIN)
+@UseGuards(AuthGuard())
 export class BackupController {
   constructor(private readonly _backupUC: BackupUC) {}
 

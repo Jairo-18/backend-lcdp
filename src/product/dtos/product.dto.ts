@@ -1,11 +1,24 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
-  IsArray, IsBoolean, IsIn, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Min, ValidateNested,
+  IsArray,
+  IsBoolean,
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  Min,
+  ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { HttpStatus } from '@nestjs/common';
 import { BaseResponseDto } from '../../shared/dtos/response.dto';
-import { PaginationDto, PaginatedResult } from '../../shared/dtos/pagination.dto';
+import {
+  PaginationDto,
+  PaginatedResult,
+} from '../../shared/dtos/pagination.dto';
 import { Product } from '../../shared/entities/product.entity';
 
 export class CreatePresentationDto {
@@ -63,7 +76,10 @@ export class CreateProductDto {
   @IsBoolean()
   isActive?: boolean;
 
-  @ApiProperty({ required: false, example: { rendimiento: '40m² / galón', dilución: '10-15%' } })
+  @ApiProperty({
+    required: false,
+    example: { rendimiento: '40m² / galón', dilución: '10-15%' },
+  })
   @IsOptional()
   technicalSheet?: Record<string, string | number | boolean>;
 
@@ -102,7 +118,11 @@ export class ProductQueryDto extends PaginationDto {
   @Type(() => Number)
   brandId?: number;
 
-  @ApiProperty({ required: false, enum: ['name', 'createdAt'], default: 'name' })
+  @ApiProperty({
+    required: false,
+    enum: ['name', 'createdAt'],
+    default: 'name',
+  })
   @IsOptional()
   @IsIn(['name', 'createdAt'])
   orderBy?: 'name' | 'createdAt';
