@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ProductPresentation } from './product-presentation.entity';
+import { ImageVariant } from '../dtos/image-variant.dto';
 
 @Entity({ name: 'product_images' })
 export class ProductImage {
@@ -23,8 +24,8 @@ export class ProductImage {
   @Column('int')
   presentationId: number;
 
-  @Column('varchar', { length: 500 })
-  url: string;
+  @Column('jsonb')
+  variants: ImageVariant;
 
   @Column('int', { default: 0 })
   order: number;
