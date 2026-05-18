@@ -16,8 +16,8 @@ import { Type } from 'class-transformer';
 import { HttpStatus } from '@nestjs/common';
 import { BaseResponseDto } from '../../shared/dtos/response.dto';
 import {
-  PaginationDto,
-  PaginatedResult,
+  ParamsPaginationDto,
+  ResponsePaginationDto,
 } from '../../shared/dtos/pagination.dto';
 import { Product } from '../../shared/entities/product.entity';
 import { ImageVariantDto } from '../../shared/dtos/image-variant.dto';
@@ -111,12 +111,7 @@ export class CreateProductDto {
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
 
-export class ProductQueryDto extends PaginationDto {
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  search?: string;
-
+export class ProductQueryDto extends ParamsPaginationDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsInt()
@@ -139,11 +134,6 @@ export class ProductQueryDto extends PaginationDto {
   @IsOptional()
   @IsIn(['name', 'createdAt'])
   orderBy?: 'name' | 'createdAt';
-
-  @ApiProperty({ required: false, enum: ['ASC', 'DESC'], default: 'ASC' })
-  @IsOptional()
-  @IsIn(['ASC', 'DESC'])
-  order?: 'ASC' | 'DESC';
 }
 
 export class GetProductResponseDto implements BaseResponseDto {
@@ -159,5 +149,5 @@ export class GetProductsResponseDto implements BaseResponseDto {
   statusCode: number;
 
   @ApiProperty()
-  data: PaginatedResult<Product>;
+  data: ResponsePaginationDto<Product>;
 }

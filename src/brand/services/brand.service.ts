@@ -2,7 +2,8 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { Brand } from '../../shared/entities/brand.entity';
 import { BrandRepository } from '../../shared/repositories/brand.repository';
 import { BrandQueryDto, CreateBrandDto, UpdateBrandDto } from '../dtos/brand.dto';
-import { PaginatedResult } from '../../shared/dtos/pagination.dto';
+import { PageMetaDto } from '../../shared/dtos/pageMeta.dto';
+import { ResponsePaginationDto } from '../../shared/dtos/pagination.dto';
 
 @Injectable()
 export class BrandService {
@@ -14,23 +15,24 @@ export class BrandService {
     return this._repo.save(this._repo.create(dto));
   }
 
-  async findAll(query: BrandQueryDto): Promise<PaginatedResult<Brand>> {
-    const page  = query.page  ?? 1;
-    const limit = query.limit ?? 10;
-    const skip  = (page - 1) * limit;
+  async findAll(query: BrandQueryDto): Promise<ResponsePaginationDto<Brand>> {
+    const page   = query.page    ?? 1;
+    const perPage = query.perPage ?? 10;
+    const skip   = (page - 1) * perPage;
 
     const qb = this._repo
       .createQueryBuilder('brand')
-      .orderBy('brand.name', 'ASC')
+      .orderBy('brand.name', query.order ?? 'ASC')
       .skip(skip)
-      .take(limit);
+      .take(perPage);
 
     if (query.search) {
       qb.andWhere('LOWER(brand.name) LIKE LOWER(:s)', { s: `%${query.search}%` });
     }
 
-    const [items, total] = await qb.getManyAndCount();
-    return { items, total, page, limit, totalPages: Math.ceil(total / limit) };
+    const [items, itemCount] = await qb.getManyAndCount();
+    const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto: query });
+    return new ResponsePaginationDto(items, pageMeta);
   }
 
   async findOne(id: number): Promise<Brand> {

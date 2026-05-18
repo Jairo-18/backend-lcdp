@@ -5,7 +5,7 @@ import { HttpStatus } from '@nestjs/common';
 import { BaseResponseDto } from '../../shared/dtos/response.dto';
 import { Brand } from '../../shared/entities/brand.entity';
 import { ImageVariantDto } from '../../shared/dtos/image-variant.dto';
-import { PaginationDto, PaginatedResult } from '../../shared/dtos/pagination.dto';
+import { ParamsPaginationDto, ResponsePaginationDto } from '../../shared/dtos/pagination.dto';
 
 export class CreateBrandDto {
   @ApiProperty({ example: 'Pintuco' })
@@ -28,12 +28,7 @@ export class CreateBrandDto {
 
 export class UpdateBrandDto extends PartialType(CreateBrandDto) {}
 
-export class BrandQueryDto extends PaginationDto {
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  search?: string;
-}
+export class BrandQueryDto extends ParamsPaginationDto {}
 
 export class GetBrandResponseDto implements BaseResponseDto {
   @ApiProperty({ type: Number, example: HttpStatus.OK })
@@ -48,5 +43,5 @@ export class GetBrandsResponseDto implements BaseResponseDto {
   statusCode: number;
 
   @ApiProperty()
-  data: PaginatedResult<Brand>;
+  data: ResponsePaginationDto<Brand>;
 }

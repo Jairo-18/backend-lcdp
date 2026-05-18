@@ -1,9 +1,9 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { HttpStatus } from '@nestjs/common';
 import { BaseResponseDto } from '../../shared/dtos/response.dto';
 import { TaxType } from '../../shared/entities/tax-type.entity';
-import { PaginationDto, PaginatedResult } from '../../shared/dtos/pagination.dto';
+import { ParamsPaginationDto, ResponsePaginationDto } from '../../shared/dtos/pagination.dto';
 
 export class CreateTaxTypeDto {
   @ApiProperty({ example: 'IVA 19%' })
@@ -19,12 +19,7 @@ export class CreateTaxTypeDto {
 
 export class UpdateTaxTypeDto extends PartialType(CreateTaxTypeDto) {}
 
-export class TaxTypeQueryDto extends PaginationDto {
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  search?: string;
-}
+export class TaxTypeQueryDto extends ParamsPaginationDto {}
 
 export class GetTaxTypeResponseDto implements BaseResponseDto {
   @ApiProperty({ type: Number, example: HttpStatus.OK })
@@ -39,5 +34,5 @@ export class GetTaxTypesResponseDto implements BaseResponseDto {
   statusCode: number;
 
   @ApiProperty()
-  data: PaginatedResult<TaxType>;
+  data: ResponsePaginationDto<TaxType>;
 }

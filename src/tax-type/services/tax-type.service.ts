@@ -2,7 +2,8 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { TaxType } from '../../shared/entities/tax-type.entity';
 import { TaxTypeRepository } from '../../shared/repositories/tax-type.repository';
 import { CreateTaxTypeDto, TaxTypeQueryDto, UpdateTaxTypeDto } from '../dtos/tax-type.dto';
-import { PaginatedResult } from '../../shared/dtos/pagination.dto';
+import { PageMetaDto } from '../../shared/dtos/pageMeta.dto';
+import { ResponsePaginationDto } from '../../shared/dtos/pagination.dto';
 
 @Injectable()
 export class TaxTypeService {
@@ -14,23 +15,24 @@ export class TaxTypeService {
     return this._repo.save(this._repo.create(dto));
   }
 
-  async findAll(query: TaxTypeQueryDto): Promise<PaginatedResult<TaxType>> {
-    const page  = query.page  ?? 1;
-    const limit = query.limit ?? 10;
-    const skip  = (page - 1) * limit;
+  async findAll(query: TaxTypeQueryDto): Promise<ResponsePaginationDto<TaxType>> {
+    const page    = query.page    ?? 1;
+    const perPage = query.perPage ?? 10;
+    const skip    = (page - 1) * perPage;
 
     const qb = this._repo
       .createQueryBuilder('taxType')
-      .orderBy('taxType.name', 'ASC')
+      .orderBy('taxType.name', query.order ?? 'ASC')
       .skip(skip)
-      .take(limit);
+      .take(perPage);
 
     if (query.search) {
       qb.andWhere('LOWER(taxType.name) LIKE LOWER(:s)', { s: `%${query.search}%` });
     }
 
-    const [items, total] = await qb.getManyAndCount();
-    return { items, total, page, limit, totalPages: Math.ceil(total / limit) };
+    const [items, itemCount] = await qb.getManyAndCount();
+    const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto: query });
+    return new ResponsePaginationDto(items, pageMeta);
   }
 
   async findOne(id: number): Promise<TaxType> {
