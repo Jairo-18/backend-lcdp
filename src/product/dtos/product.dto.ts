@@ -1,12 +1,26 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
-  IsArray, IsBoolean, IsIn, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Min, ValidateNested,
+  IsArray,
+  IsBoolean,
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  Min,
+  ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { HttpStatus } from '@nestjs/common';
 import { BaseResponseDto } from '../../shared/dtos/response.dto';
-import { PaginationDto, PaginatedResult } from '../../shared/dtos/pagination.dto';
+import {
+  ParamsPaginationDto,
+  ResponsePaginationDto,
+} from '../../shared/dtos/pagination.dto';
 import { Product } from '../../shared/entities/product.entity';
+import { ImageVariantDto } from '../../shared/dtos/image-variant.dto';
 
 export class CreatePresentationDto {
   @ApiProperty({ example: 1 })
@@ -19,6 +33,13 @@ export class CreatePresentationDto {
   @IsOptional()
   @IsString()
   sku?: string;
+
+  @ApiProperty({ type: [ImageVariantDto], required: false })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ImageVariantDto)
+  images?: ImageVariantDto[];
 }
 
 export class CreateProductDto {
@@ -26,6 +47,11 @@ export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  @ApiProperty({ required: false, example: 'KOR-VK1-BL' })
+  @IsOptional()
+  @IsString()
+  code?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -63,7 +89,10 @@ export class CreateProductDto {
   @IsBoolean()
   isActive?: boolean;
 
-  @ApiProperty({ required: false, example: { rendimiento: '40m² / galón', dilución: '10-15%' } })
+  @ApiProperty({
+    required: false,
+    example: { rendimiento: '40m² / galón', dilución: '10-15%' },
+  })
   @IsOptional()
   technicalSheet?: Record<string, string | number | boolean>;
 
@@ -82,12 +111,7 @@ export class CreateProductDto {
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
 
-export class ProductQueryDto extends PaginationDto {
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  search?: string;
-
+export class ProductQueryDto extends ParamsPaginationDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsInt()
@@ -97,25 +121,19 @@ export class ProductQueryDto extends PaginationDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-<<<<<<< HEAD
   @IsInt()
   @IsPositive()
   @Type(() => Number)
   brandId?: number;
-=======
-  @IsUUID()
-  brandId?: string;
 
-  @ApiProperty({ required: false, enum: ['name', 'createdAt'], default: 'name' })
+  @ApiProperty({
+    required: false,
+    enum: ['name', 'createdAt'],
+    default: 'name',
+  })
   @IsOptional()
   @IsIn(['name', 'createdAt'])
   orderBy?: 'name' | 'createdAt';
-
-  @ApiProperty({ required: false, enum: ['ASC', 'DESC'], default: 'ASC' })
-  @IsOptional()
-  @IsIn(['ASC', 'DESC'])
-  order?: 'ASC' | 'DESC';
->>>>>>> 1dbad030fa5fb51a028da0c43c19f0e9debeb460
 }
 
 export class GetProductResponseDto implements BaseResponseDto {
@@ -131,5 +149,5 @@ export class GetProductsResponseDto implements BaseResponseDto {
   statusCode: number;
 
   @ApiProperty()
-  data: PaginatedResult<Product>;
+  data: ResponsePaginationDto<Product>;
 }
