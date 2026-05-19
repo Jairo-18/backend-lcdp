@@ -3,6 +3,8 @@ import { OrganizationalService } from '../services/organizational.service';
 import { CreateOrganizationalDto, UpdateOrganizationalDto } from '../dtos/organizational.dto';
 import { Category } from '../../shared/entities/category.entity';
 import { UnitOfMeasure } from '../../shared/entities/unit-of-measure.entity';
+import { Brand } from '../../shared/entities/brand.entity';
+import { TaxType } from '../../shared/entities/tax-type.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -14,6 +16,10 @@ export class OrganizationalUC {
     private readonly _categoryRepo: Repository<Category>,
     @InjectRepository(UnitOfMeasure)
     private readonly _unitRepo: Repository<UnitOfMeasure>,
+    @InjectRepository(Brand)
+    private readonly _brandRepo: Repository<Brand>,
+    @InjectRepository(TaxType)
+    private readonly _taxTypeRepo: Repository<TaxType>,
   ) {}
 
   async create(dto: CreateOrganizationalDto) {
@@ -29,12 +35,14 @@ export class OrganizationalUC {
   }
 
   async bootstrap() {
-    const [org, categories, units] = await Promise.all([
+    const [org, categories, units, brands, taxTypes] = await Promise.all([
       this._orgService.findOne().catch(() => null),
-      this._categoryRepo.find({ order: { name: 'ASC' } }),
-      this._unitRepo.find({ order: { name: 'ASC' } }),
+      this._categoryRepo.find({ select: ['id', 'name', 'code', 'images'], order: { name: 'ASC' } }),
+      this._unitRepo.find({ select: ['id', 'name', 'code'], order: { name: 'ASC' } }),
+      this._brandRepo.find({ select: ['id', 'name', 'code', 'images'], order: { name: 'ASC' } }),
+      this._taxTypeRepo.find({ select: ['id', 'name', 'code'], order: { name: 'ASC' } }),
     ]);
 
-    return { org, categories, units };
+    return { org, categories, units, brands, taxTypes };
   }
 }

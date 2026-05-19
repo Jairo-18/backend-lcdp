@@ -34,6 +34,13 @@ export class CreatePresentationDto {
   @IsString()
   sku?: string;
 
+  @ApiProperty({ required: false, example: 45900 })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Type(() => Number)
+  priceSale?: number;
+
   @ApiProperty({ type: [ImageVariantDto], required: false })
   @IsOptional()
   @IsArray()

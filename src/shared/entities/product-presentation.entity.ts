@@ -37,6 +37,9 @@ export class ProductPresentation {
   @Column('varchar', { length: 100, nullable: true })
   sku: string;
 
+  @Column('decimal', { precision: 12, scale: 2, nullable: true })
+  priceSale: number | null;
+
   @OneToMany(() => ProductImage, (image) => image.presentation, {
     cascade: true,
   })

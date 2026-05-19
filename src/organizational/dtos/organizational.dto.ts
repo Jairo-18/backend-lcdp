@@ -5,6 +5,8 @@ import { ImageVariantDto } from '../../shared/dtos/image-variant.dto';
 import { Organizational } from '../../shared/entities/organizational.entity';
 import { Category } from '../../shared/entities/category.entity';
 import { UnitOfMeasure } from '../../shared/entities/unit-of-measure.entity';
+import { Brand } from '../../shared/entities/brand.entity';
+import { TaxType } from '../../shared/entities/tax-type.entity';
 import { HttpStatus } from '@nestjs/common';
 import { BaseResponseDto } from '../../shared/dtos/response.dto';
 
@@ -79,5 +81,7 @@ export class BootstrapResponseDto implements BaseResponseDto {
     org: Organizational | null;
     categories: Category[];
     units: UnitOfMeasure[];
+    brands: Brand[];
+    taxTypes: TaxType[];
   };
 }

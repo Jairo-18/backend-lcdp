@@ -8,10 +8,12 @@ import { OrganizationalRepository } from '../shared/repositories/organizational.
 import { Organizational } from '../shared/entities/organizational.entity';
 import { Category } from '../shared/entities/category.entity';
 import { UnitOfMeasure } from '../shared/entities/unit-of-measure.entity';
+import { Brand } from '../shared/entities/brand.entity';
+import { TaxType } from '../shared/entities/tax-type.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Organizational, Category, UnitOfMeasure]),
+    TypeOrmModule.forFeature([Organizational, Category, UnitOfMeasure, Brand, TaxType]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   controllers: [OrganizationalController],
