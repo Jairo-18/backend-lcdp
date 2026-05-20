@@ -57,9 +57,10 @@ export class ProductService {
       .take(perPage);
 
     if (query.search) {
-      qb.andWhere('LOWER(product.name) LIKE LOWER(:search)', {
-        search: `%${query.search}%`,
-      });
+      qb.andWhere(
+        '(LOWER(product.name) LIKE LOWER(:search) OR LOWER(product.code) LIKE LOWER(:search))',
+        { search: `%${query.search}%` },
+      );
     }
 
     if (query.categoryId) {
