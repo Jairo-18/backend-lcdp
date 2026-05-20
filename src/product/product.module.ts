@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { ProductController } from './controllers/product.controller';
+import { PublicProductController } from './controllers/public-product.controller';
 import { ProductService } from './services/product.service';
 import { ProductUC } from './useCases/product.UC';
 import { ProductRepository } from '../shared/repositories/product.repository';
@@ -15,7 +16,7 @@ import { ProductImage } from '../shared/entities/product-image.entity';
     TypeOrmModule.forFeature([Product, ProductPresentation, ProductImage]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
-  controllers: [ProductController],
+  controllers: [ProductController, PublicProductController],
   providers: [ProductService, ProductUC, ProductRepository, ProductPresentationRepository],
   exports: [ProductService],
 })

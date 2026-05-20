@@ -114,6 +114,20 @@ export class CreateProductDto {
   @ValidateNested({ each: true })
   @Type(() => CreatePresentationDto)
   presentations?: CreatePresentationDto[];
+
+  @ApiProperty({ required: false, example: 10 })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Type(() => Number)
+  markupPercentage?: number;
+
+  @ApiProperty({ required: false, example: 15 })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Type(() => Number)
+  discountPercentage?: number;
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}

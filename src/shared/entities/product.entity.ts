@@ -60,6 +60,12 @@ export class Product {
   @Column('varchar', { length: 500, nullable: true })
   videoUrl: string;
 
+  @Column('int', { nullable: true })
+  markupPercentage: number | null;
+
+  @Column('int', { nullable: true })
+  discountPercentage: number | null;
+
   @OneToMany(() => ProductPresentation, (presentation) => presentation.product, {
     cascade: true,
   })

@@ -73,6 +73,42 @@ export class ProductService {
     return new ResponsePaginationDto(items, pageMeta);
   }
 
+  async findAllPublic(query: ProductQueryDto): Promise<ResponsePaginationDto<Product>> {
+    const page    = query.page    ?? 1;
+    const perPage = query.perPage ?? 25;
+    const skip    = (page - 1) * perPage;
+
+    const orderCol = query.orderBy === 'createdAt' ? 'product.createdAt' : 'product.name';
+    const orderDir = query.order ?? 'ASC';
+
+    const qb = this._repo
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.brand', 'brand')
+      .leftJoinAndSelect('product.taxType', 'taxType')
+      .leftJoinAndSelect('product.presentations', 'presentations')
+      .leftJoinAndSelect('presentations.unitOfMeasure', 'unitOfMeasure')
+      .leftJoinAndSelect('presentations.images', 'images')
+      .where('product.isActive = :isActive', { isActive: true })
+      .orderBy(orderCol, orderDir)
+      .skip(skip)
+      .take(perPage);
+
+    if (query.search) {
+      qb.andWhere('LOWER(product.name) LIKE LOWER(:search)', { search: `%${query.search}%` });
+    }
+    if (query.categoryId) {
+      qb.andWhere('product.categoryId = :categoryId', { categoryId: query.categoryId });
+    }
+    if (query.brandId) {
+      qb.andWhere('product.brandId = :brandId', { brandId: query.brandId });
+    }
+
+    const [items, itemCount] = await qb.getManyAndCount();
+    const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto: query });
+    return new ResponsePaginationDto(items, pageMeta);
+  }
+
   async findOne(id: number): Promise<Product> {
     const product = await this._repo.findOne({
       where: { id },
