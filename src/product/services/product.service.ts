@@ -3,6 +3,7 @@ import { Product } from '../../shared/entities/product.entity';
 import { ProductImage } from '../../shared/entities/product-image.entity';
 import { ProductRepository } from '../../shared/repositories/product.repository';
 import { ProductPresentationRepository } from '../../shared/repositories/product-presentation.repository';
+import { CategoryRepository } from '../../shared/repositories/category.repository';
 import { CreateProductDto, ProductQueryDto, UpdateProductDto } from '../dtos/product.dto';
 import { PageMetaDto } from '../../shared/dtos/pageMeta.dto';
 import { ResponsePaginationDto } from '../../shared/dtos/pagination.dto';
@@ -13,12 +14,15 @@ export class ProductService {
   constructor(
     private readonly _repo: ProductRepository,
     private readonly _presentationRepo: ProductPresentationRepository,
+    private readonly _categoryRepo: CategoryRepository,
     private readonly _upload: UploadService,
   ) {}
 
   async create(dto: CreateProductDto): Promise<Product> {
-    const { presentations, ...productData } = dto;
+    const { presentations, categoryIds, ...productData } = dto;
     const product = this._repo.create(productData);
+
+    product.categories = await this._categoryRepo.findByIds(categoryIds);
 
     if (presentations?.length) {
       product.presentations = presentations.map((p) => {
@@ -46,7 +50,7 @@ export class ProductService {
 
     const qb = this._repo
       .createQueryBuilder('product')
-      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.categories', 'category')
       .leftJoinAndSelect('product.brand', 'brand')
       .leftJoinAndSelect('product.taxType', 'taxType')
       .leftJoinAndSelect('product.presentations', 'presentations')
@@ -64,7 +68,7 @@ export class ProductService {
     }
 
     if (query.categoryId) {
-      qb.andWhere('product.categoryId = :categoryId', { categoryId: query.categoryId });
+      qb.andWhere('category.id = :categoryId', { categoryId: query.categoryId });
     }
 
     if (query.brandId) {
@@ -86,7 +90,7 @@ export class ProductService {
 
     const qb = this._repo
       .createQueryBuilder('product')
-      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.categories', 'category')
       .leftJoinAndSelect('product.brand', 'brand')
       .leftJoinAndSelect('product.taxType', 'taxType')
       .leftJoinAndSelect('product.presentations', 'presentations')
@@ -104,7 +108,7 @@ export class ProductService {
       );
     }
     if (query.categoryId) {
-      qb.andWhere('product.categoryId = :categoryId', { categoryId: query.categoryId });
+      qb.andWhere('category.id = :categoryId', { categoryId: query.categoryId });
     }
     if (query.brandId) {
       qb.andWhere('product.brandId = :brandId', { brandId: query.brandId });
@@ -119,7 +123,7 @@ export class ProductService {
     const product = await this._repo.findOne({
       where: { id },
       relations: [
-        'category',
+        'categories',
         'brand',
         'taxType',
         'presentations',
@@ -133,8 +137,12 @@ export class ProductService {
 
   async update(id: number, dto: UpdateProductDto): Promise<Product> {
     const product = await this.findOne(id);
-    const { presentations, ...productData } = dto;
+    const { presentations, categoryIds, ...productData } = dto;
     Object.assign(product, productData);
+
+    if (categoryIds !== undefined) {
+      product.categories = await this._categoryRepo.findByIds(categoryIds);
+    }
 
     if (presentations !== undefined) {
       const oldVariants = product.presentations.flatMap(p => p.images.map(img => img.variants));

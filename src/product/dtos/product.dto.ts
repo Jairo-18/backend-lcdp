@@ -65,11 +65,12 @@ export class CreateProductDto {
   @IsString()
   description?: string;
 
-  @ApiProperty({ example: 1 })
-  @IsInt()
-  @IsPositive()
+  @ApiProperty({ example: [1, 2], type: [Number] })
+  @IsArray()
+  @IsInt({ each: true })
+  @IsPositive({ each: true })
   @Type(() => Number)
-  categoryId: number;
+  categoryIds: number[];
 
   @ApiProperty({ example: 1 })
   @IsInt()

@@ -3,6 +3,8 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -27,12 +29,13 @@ export class Product {
   @Column('text', { nullable: true })
   description: string;
 
-  @ManyToOne(() => Category, { nullable: false })
-  @JoinColumn({ name: 'categoryId' })
-  category: Category;
-
-  @Column('int')
-  categoryId: number;
+  @ManyToMany(() => Category, { eager: false })
+  @JoinTable({
+    name: 'product_categories',
+    joinColumn:        { name: 'productId',  referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'categoryId', referencedColumnName: 'id' },
+  })
+  categories: Category[];
 
   @ManyToOne(() => Brand, { nullable: false })
   @JoinColumn({ name: 'brandId' })
