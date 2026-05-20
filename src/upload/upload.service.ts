@@ -52,4 +52,12 @@ export class UploadService {
 
     return results;
   }
+
+  deleteVariants(variants: ImageVariant): void {
+    for (const urlPath of Object.values(variants)) {
+      if (!urlPath) continue;
+      const absPath = path.join(this.basePath, '..', urlPath);
+      fs.unlink(absPath, () => { /* ignore if already gone */ });
+    }
+  }
 }

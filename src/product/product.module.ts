@@ -10,6 +10,7 @@ import { ProductPresentationRepository } from '../shared/repositories/product-pr
 import { Product } from '../shared/entities/product.entity';
 import { ProductPresentation } from '../shared/entities/product-presentation.entity';
 import { ProductImage } from '../shared/entities/product-image.entity';
+import { UploadService } from '../upload/upload.service';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { ProductImage } from '../shared/entities/product-image.entity';
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   controllers: [ProductController, PublicProductController],
-  providers: [ProductService, ProductUC, ProductRepository, ProductPresentationRepository],
+  providers: [ProductService, ProductUC, ProductRepository, ProductPresentationRepository, UploadService],
   exports: [ProductService],
 })
 export class ProductModule {}

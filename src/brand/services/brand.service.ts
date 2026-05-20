@@ -4,10 +4,14 @@ import { BrandRepository } from '../../shared/repositories/brand.repository';
 import { BrandQueryDto, CreateBrandDto, UpdateBrandDto } from '../dtos/brand.dto';
 import { PageMetaDto } from '../../shared/dtos/pageMeta.dto';
 import { ResponsePaginationDto } from '../../shared/dtos/pagination.dto';
+import { UploadService } from '../../upload/upload.service';
 
 @Injectable()
 export class BrandService {
-  constructor(private readonly _repo: BrandRepository) {}
+  constructor(
+    private readonly _repo: BrandRepository,
+    private readonly _upload: UploadService,
+  ) {}
 
   async create(dto: CreateBrandDto): Promise<Brand> {
     const existing = await this._repo.findOne({ where: { code: dto.code } });
@@ -47,12 +51,19 @@ export class BrandService {
       const existing = await this._repo.findOne({ where: { code: dto.code } });
       if (existing) throw new ConflictException(`Ya existe una marca con el código "${dto.code}"`);
     }
+    if (dto.images !== undefined) {
+      const removed = brand.images.filter(
+        old => !dto.images!.some(n => n.thumb === old.thumb),
+      );
+      removed.forEach(v => this._upload.deleteVariants(v));
+    }
     Object.assign(brand, dto);
     return this._repo.save(brand);
   }
 
   async remove(id: number): Promise<void> {
     const brand = await this.findOne(id);
+    brand.images.forEach(v => this._upload.deleteVariants(v));
     await this._repo.remove(brand);
   }
 }

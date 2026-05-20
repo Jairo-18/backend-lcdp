@@ -6,12 +6,14 @@ import { ProductPresentationRepository } from '../../shared/repositories/product
 import { CreateProductDto, ProductQueryDto, UpdateProductDto } from '../dtos/product.dto';
 import { PageMetaDto } from '../../shared/dtos/pageMeta.dto';
 import { ResponsePaginationDto } from '../../shared/dtos/pagination.dto';
+import { UploadService } from '../../upload/upload.service';
 
 @Injectable()
 export class ProductService {
   constructor(
     private readonly _repo: ProductRepository,
     private readonly _presentationRepo: ProductPresentationRepository,
+    private readonly _upload: UploadService,
   ) {}
 
   async create(dto: CreateProductDto): Promise<Product> {
@@ -95,7 +97,10 @@ export class ProductService {
       .take(perPage);
 
     if (query.search) {
-      qb.andWhere('LOWER(product.name) LIKE LOWER(:search)', { search: `%${query.search}%` });
+      qb.andWhere(
+        '(LOWER(product.name) LIKE LOWER(:search) OR LOWER(brand.name) LIKE LOWER(:search) OR LOWER(category.name) LIKE LOWER(:search))',
+        { search: `%${query.search}%` },
+      );
     }
     if (query.categoryId) {
       qb.andWhere('product.categoryId = :categoryId', { categoryId: query.categoryId });
@@ -131,7 +136,11 @@ export class ProductService {
     Object.assign(product, productData);
 
     if (presentations !== undefined) {
+      const oldVariants = product.presentations.flatMap(p => p.images.map(img => img.variants));
+      const newThumbs = new Set(presentations.flatMap(p => (p.images ?? []).map(v => v.thumb)));
+      const removedVariants = oldVariants.filter(v => !newThumbs.has(v.thumb));
       await this._presentationRepo.delete({ productId: id });
+      removedVariants.forEach(v => this._upload.deleteVariants(v));
       product.presentations = presentations.map((p) => {
         const { images, ...presData } = p;
         const pres = this._presentationRepo.create({ ...presData, productId: id });
@@ -149,6 +158,8 @@ export class ProductService {
 
   async remove(id: number): Promise<void> {
     const product = await this.findOne(id);
+    const oldVariants = product.presentations.flatMap(p => p.images.map(img => img.variants));
     await this._repo.remove(product);
+    oldVariants.forEach(v => this._upload.deleteVariants(v));
   }
 }

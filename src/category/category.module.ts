@@ -6,6 +6,7 @@ import { CategoryService } from './services/category.service';
 import { CategoryUC } from './useCases/category.UC';
 import { CategoryRepository } from '../shared/repositories/category.repository';
 import { Category } from '../shared/entities/category.entity';
+import { UploadService } from '../upload/upload.service';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { Category } from '../shared/entities/category.entity';
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   controllers: [CategoryController],
-  providers: [CategoryService, CategoryUC, CategoryRepository],
+  providers: [CategoryService, CategoryUC, CategoryRepository, UploadService],
   exports: [CategoryService],
 })
 export class CategoryModule {}

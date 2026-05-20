@@ -12,7 +12,6 @@ export class Organizational {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  // Datos del negocio
   @Column('varchar', { length: 150 })
   name: string;
 
@@ -43,7 +42,6 @@ export class Organizational {
   @Column('varchar', { length: 100, nullable: true })
   department?: string;
 
-  // Branding
   @Column('varchar', { length: 500, nullable: true })
   logoUrl?: string;
 
@@ -65,7 +63,6 @@ export class Organizational {
   @Column('varchar', { length: 20, nullable: true })
   textColor?: string;
 
-  // Redes sociales
   @Column('varchar', { length: 500, nullable: true })
   facebookUrl?: string;
 
@@ -81,7 +78,6 @@ export class Organizational {
   @Column('varchar', { length: 500, nullable: true })
   mapsUrl?: string;
 
-  // Contenido
   @Column('text', { nullable: true })
   description?: string;
 
@@ -103,7 +99,6 @@ export class Organizational {
   @Column('text', { nullable: true })
   visionDescription?: string;
 
-  // SEO
   @Column('varchar', { length: 200, nullable: true })
   metaTitle?: string;
 

@@ -4,10 +4,14 @@ import { CategoryRepository } from '../../shared/repositories/category.repositor
 import { CategoryQueryDto, CreateCategoryDto, UpdateCategoryDto } from '../dtos/category.dto';
 import { PageMetaDto } from '../../shared/dtos/pageMeta.dto';
 import { ResponsePaginationDto } from '../../shared/dtos/pagination.dto';
+import { UploadService } from '../../upload/upload.service';
 
 @Injectable()
 export class CategoryService {
-  constructor(private readonly _repo: CategoryRepository) {}
+  constructor(
+    private readonly _repo: CategoryRepository,
+    private readonly _upload: UploadService,
+  ) {}
 
   async create(dto: CreateCategoryDto): Promise<Category> {
     const existing = await this._repo.findOne({ where: { code: dto.code } });
@@ -47,12 +51,19 @@ export class CategoryService {
       const existing = await this._repo.findOne({ where: { code: dto.code } });
       if (existing) throw new ConflictException(`Ya existe una categoría con el código "${dto.code}"`);
     }
+    if (dto.images !== undefined) {
+      const removed = category.images.filter(
+        old => !dto.images!.some(n => n.thumb === old.thumb),
+      );
+      removed.forEach(v => this._upload.deleteVariants(v));
+    }
     Object.assign(category, dto);
     return this._repo.save(category);
   }
 
   async remove(id: number): Promise<void> {
     const category = await this.findOne(id);
+    category.images.forEach(v => this._upload.deleteVariants(v));
     await this._repo.remove(category);
   }
 }

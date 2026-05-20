@@ -6,6 +6,7 @@ import { BrandService } from './services/brand.service';
 import { BrandUC } from './useCases/brand.UC';
 import { BrandRepository } from '../shared/repositories/brand.repository';
 import { Brand } from '../shared/entities/brand.entity';
+import { UploadService } from '../upload/upload.service';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { Brand } from '../shared/entities/brand.entity';
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   controllers: [BrandController],
-  providers: [BrandService, BrandUC, BrandRepository],
+  providers: [BrandService, BrandUC, BrandRepository, UploadService],
   exports: [BrandService],
 })
 export class BrandModule {}
