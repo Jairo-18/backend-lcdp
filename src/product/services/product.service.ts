@@ -62,7 +62,7 @@ export class ProductService {
 
     if (query.search) {
       qb.andWhere(
-        '(LOWER(product.name) LIKE LOWER(:search) OR LOWER(product.code) LIKE LOWER(:search))',
+        '(LOWER(product.name) LIKE LOWER(:search) OR LOWER(product.code) LIKE LOWER(:search) OR LOWER(brand.name) LIKE LOWER(:search) OR LOWER(category.name) LIKE LOWER(:search))',
         { search: `%${query.search}%` },
       );
     }
@@ -103,7 +103,7 @@ export class ProductService {
 
     if (query.search) {
       qb.andWhere(
-        '(LOWER(product.name) LIKE LOWER(:search) OR LOWER(brand.name) LIKE LOWER(:search) OR LOWER(category.name) LIKE LOWER(:search))',
+        '(LOWER(product.name) LIKE LOWER(:search) OR LOWER(product.code) LIKE LOWER(:search) OR LOWER(brand.name) LIKE LOWER(:search) OR LOWER(category.name) LIKE LOWER(:search))',
         { search: `%${query.search}%` },
       );
     }
