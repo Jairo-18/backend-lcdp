@@ -1,7 +1,7 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ImageVariantDto } from '../../shared/dtos/image-variant.dto';
+import { ImageVariantDto, VideoVariantDto } from '../../shared/dtos/image-variant.dto';
 import { Organizational } from '../../shared/entities/organizational.entity';
 import { Category } from '../../shared/entities/category.entity';
 import { UnitOfMeasure } from '../../shared/entities/unit-of-measure.entity';
@@ -58,6 +58,20 @@ export class CreateOrganizationalDto {
   @ValidateNested({ each: true })
   @Type(() => ImageVariantDto)
   bannerImages?: ImageVariantDto[];
+
+  @ApiProperty({ required: false, type: [VideoVariantDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => VideoVariantDto)
+  heroVideos?: VideoVariantDto[];
+
+  @ApiProperty({ required: false, type: [VideoVariantDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => VideoVariantDto)
+  aboutVideos?: VideoVariantDto[];
 }
 
 export class UpdateOrganizationalDto extends PartialType(CreateOrganizationalDto) {

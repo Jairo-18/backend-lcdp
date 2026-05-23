@@ -20,3 +20,18 @@ export interface ImageVariant {
   md: string;
   lg: string;
 }
+
+export class VideoVariantDto {
+  @ApiProperty({ example: '/uploads/organizational/videos/uuid.mp4' })
+  @IsString()
+  url: string;
+
+  @ApiProperty({ example: '/uploads/organizational/videos/uuid-poster.webp' })
+  @IsString()
+  poster: string;
+}
+
+export interface VideoVariant {
+  url: string;
+  poster: string;
+}

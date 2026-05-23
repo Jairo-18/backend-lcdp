@@ -5,6 +5,9 @@ FROM node:18-alpine AS production
 # Set working directory
 WORKDIR /app
 
+# Install system dependencies
+RUN apk add --no-cache ffmpeg
+
 # Install pnpm
 RUN npm install -g pnpm
 

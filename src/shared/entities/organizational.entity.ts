@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ImageVariant } from '../dtos/image-variant.dto';
+import { ImageVariant, VideoVariant } from '../dtos/image-variant.dto';
 
 @Entity({ name: 'organizational' })
 export class Organizational {
@@ -110,6 +110,12 @@ export class Organizational {
 
   @Column('jsonb', { default: [] })
   bannerImages: ImageVariant[];
+
+  @Column('jsonb', { default: [] })
+  heroVideos: VideoVariant[];
+
+  @Column('jsonb', { default: [] })
+  aboutVideos: VideoVariant[];
 
   @Column({ type: 'boolean', default: true })
   status: boolean;
