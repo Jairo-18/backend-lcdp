@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import { randomUUID } from 'crypto';
 import { ImageVariant } from '../shared/dtos/image-variant.dto';
 
-export type UploadFolder = 'organizational' | 'brands' | 'categories' | 'products/images';
+export type UploadFolder = 'organizational' | 'brands' | 'categories' | 'products/images' | 'products/documents';
 
 const VARIANTS = [
   { suffix: 'thumb', width: 400,  quality: 65 },
@@ -53,11 +53,42 @@ export class UploadService {
     return results;
   }
 
+  async saveDocument(file: Express.Multer.File, folder: string): Promise<string> {
+    if (!file) throw new BadRequestException('No se recibió archivo');
+    const folderPath = path.join(this.basePath, folder);
+    fs.mkdirSync(folderPath, { recursive: true });
+    const ext = path.extname(file.originalname) || '.pdf';
+    const filename = `${randomUUID()}${ext}`;
+    fs.writeFileSync(path.join(folderPath, filename), file.buffer);
+    return `/uploads/${folder}/${filename}`;
+  }
+
+  deleteFile(filePath: string): void {
+    if (!filePath) return;
+    const relPath = this._toRelativePath(filePath);
+    if (!relPath) return;
+    const absPath = path.join(this.basePath, '..', relPath);
+    fs.unlink(absPath, () => { /* ignore if already gone */ });
+  }
+
   deleteVariants(variants: ImageVariant): void {
     for (const urlPath of Object.values(variants)) {
       if (!urlPath) continue;
-      const absPath = path.join(this.basePath, '..', urlPath);
+      const relPath = this._toRelativePath(urlPath);
+      if (!relPath) continue;
+      const absPath = path.join(this.basePath, '..', relPath);
       fs.unlink(absPath, () => { /* ignore if already gone */ });
+    }
+  }
+
+  private _toRelativePath(urlOrPath: string): string | null {
+    try {
+      if (urlOrPath.startsWith('http')) {
+        return new URL(urlOrPath).pathname;
+      }
+      return urlOrPath;
+    } catch {
+      return null;
     }
   }
 }

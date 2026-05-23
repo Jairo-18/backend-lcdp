@@ -152,6 +152,14 @@ export class ProductService {
   async update(id: number, dto: UpdateProductDto): Promise<Product> {
     const product = await this.findOne(id);
     const { presentations, categoryIds, ...productData } = dto;
+
+    if ('technicalSheet' in productData && product.technicalSheet && productData.technicalSheet !== product.technicalSheet) {
+      this._upload.deleteFile(product.technicalSheet);
+    }
+    if ('safetySheet' in productData && product.safetySheet && productData.safetySheet !== product.safetySheet) {
+      this._upload.deleteFile(product.safetySheet);
+    }
+
     Object.assign(product, productData);
 
     if (categoryIds !== undefined) {
@@ -184,5 +192,7 @@ export class ProductService {
     const oldVariants = product.presentations.flatMap(p => p.images.map(img => img.variants));
     await this._repo.remove(product);
     oldVariants.forEach(v => this._upload.deleteVariants(v));
+    if (product.technicalSheet) this._upload.deleteFile(product.technicalSheet);
+    if (product.safetySheet) this._upload.deleteFile(product.safetySheet);
   }
 }

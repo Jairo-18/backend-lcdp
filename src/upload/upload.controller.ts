@@ -2,12 +2,13 @@ import {
   Controller,
   HttpStatus,
   Post,
+  UploadedFile,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -24,6 +25,17 @@ const multerOptions = {
   fileFilter: (_req: any, file: Express.Multer.File, cb: any) => {
     if (!file.mimetype.startsWith('image/')) {
       return cb(new Error('Solo se permiten archivos de imagen'), false);
+    }
+    cb(null, true);
+  },
+};
+
+const pdfMulterOptions = {
+  storage: memoryStorage(),
+  limits: { fileSize: 20 * 1024 * 1024 },
+  fileFilter: (_req: any, file: Express.Multer.File, cb: any) => {
+    if (file.mimetype !== 'application/pdf') {
+      return cb(new Error('Solo se permiten archivos PDF'), false);
     }
     cb(null, true);
   },
@@ -83,5 +95,20 @@ export class UploadController {
   async uploadProductImages(@UploadedFiles() files: Express.Multer.File[]) {
     const images = await this._service.processAndSave(files, 'products/images');
     return { statusCode: HttpStatus.OK, data: { images } };
+  }
+
+  @Post('products/documents')
+  @ApiOperation({ summary: 'Subir documento PDF de producto — retorna URL del archivo' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: { file: { type: 'string', format: 'binary' } },
+    },
+  })
+  @UseInterceptors(FileInterceptor('file', pdfMulterOptions))
+  async uploadProductDocument(@UploadedFile() file: Express.Multer.File) {
+    const url = await this._service.saveDocument(file, 'products/documents');
+    return { statusCode: HttpStatus.OK, data: { url } };
   }
 }

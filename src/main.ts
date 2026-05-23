@@ -103,6 +103,14 @@ async function bootstrap() {
     }),
   );
 
+  // Allow PDFs in /uploads/products/documents to be embedded in iframes from the frontend
+  const frameOrigins = allowedOrigins.includes('*') ? '*' : allowedOrigins.join(' ');
+  app.use('/uploads/products/documents', (req: any, res: any, next: any) => {
+    res.removeHeader('X-Frame-Options');
+    res.setHeader('Content-Security-Policy', `frame-ancestors 'self' ${frameOrigins}`);
+    next();
+  });
+
   app.use((req: any, res: any, next: any) => {
     const path: string = req.path || '';
     if (path.startsWith('/auth') || path.startsWith('/api')) {

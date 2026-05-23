@@ -97,12 +97,30 @@ export class CreateProductDto {
   @IsBoolean()
   isActive?: boolean;
 
-  @ApiProperty({
-    required: false,
-    example: { rendimiento: '40m² / galón', dilución: '10-15%' },
-  })
+  @ApiProperty({ required: false, description: 'URL del PDF de ficha técnica' })
   @IsOptional()
-  technicalSheet?: Record<string, string | number | boolean>;
+  @IsString()
+  technicalSheet?: string;
+
+  @ApiProperty({ required: false, description: 'URL del PDF de ficha de seguridad' })
+  @IsOptional()
+  @IsString()
+  safetySheet?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  modeOfUse?: string;
+
+  @ApiProperty({ required: false, example: '40 m² por galón en superficie lisa' })
+  @IsOptional()
+  @IsString()
+  performance?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  benefits?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()

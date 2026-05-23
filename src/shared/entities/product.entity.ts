@@ -57,8 +57,20 @@ export class Product {
   @Column('boolean', { default: true })
   isActive: boolean;
 
-  @Column('jsonb', { nullable: true })
-  technicalSheet: Record<string, string | number | boolean>;
+  @Column('varchar', { length: 500, nullable: true })
+  technicalSheet: string;
+
+  @Column('varchar', { length: 500, nullable: true })
+  safetySheet: string;
+
+  @Column('text', { nullable: true })
+  modeOfUse: string;
+
+  @Column('varchar', { length: 300, nullable: true })
+  performance: string;
+
+  @Column('text', { nullable: true })
+  benefits: string;
 
   @Column('varchar', { length: 500, nullable: true })
   videoUrl: string;
