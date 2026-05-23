@@ -5,12 +5,14 @@ import { BrandQueryDto, CreateBrandDto, UpdateBrandDto } from '../dtos/brand.dto
 import { PageMetaDto } from '../../shared/dtos/pageMeta.dto';
 import { ResponsePaginationDto } from '../../shared/dtos/pagination.dto';
 import { UploadService } from '../../upload/upload.service';
+import { ProductRepository } from '../../shared/repositories/product.repository';
 
 @Injectable()
 export class BrandService {
   constructor(
     private readonly _repo: BrandRepository,
     private readonly _upload: UploadService,
+    private readonly _productRepo: ProductRepository,
   ) {}
 
   async create(dto: CreateBrandDto): Promise<Brand> {
@@ -63,6 +65,9 @@ export class BrandService {
 
   async remove(id: number): Promise<void> {
     const brand = await this.findOne(id);
+    const count = await this._productRepo.count({ where: { brandId: id } });
+    if (count > 0)
+      throw new ConflictException(`Esta marca está asociada a ${count} producto(s) y no puede eliminarse`);
     brand.images.forEach(v => this._upload.deleteVariants(v));
     await this._repo.remove(brand);
   }

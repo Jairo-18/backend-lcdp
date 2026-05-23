@@ -2,10 +2,14 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { UnitOfMeasure } from '../../shared/entities/unit-of-measure.entity';
 import { UnitOfMeasureRepository } from '../../shared/repositories/unit-of-measure.repository';
 import { CreateUnitOfMeasureDto, UpdateUnitOfMeasureDto } from '../dtos/unit-of-measure.dto';
+import { ProductPresentationRepository } from '../../shared/repositories/product-presentation.repository';
 
 @Injectable()
 export class UnitOfMeasureService {
-  constructor(private readonly _repo: UnitOfMeasureRepository) {}
+  constructor(
+    private readonly _repo: UnitOfMeasureRepository,
+    private readonly _presentationRepo: ProductPresentationRepository,
+  ) {}
 
   async create(dto: CreateUnitOfMeasureDto): Promise<UnitOfMeasure> {
     const existing = await this._repo.findOne({ where: { code: dto.code } });
@@ -35,6 +39,9 @@ export class UnitOfMeasureService {
 
   async remove(id: number): Promise<void> {
     const unit = await this.findOne(id);
+    const count = await this._presentationRepo.count({ where: { unitOfMeasureId: id } });
+    if (count > 0)
+      throw new ConflictException(`Esta unidad de medida está asociada a ${count} presentación(es) y no puede eliminarse`);
     await this._repo.remove(unit);
   }
 }

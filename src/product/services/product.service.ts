@@ -75,6 +75,14 @@ export class ProductService {
       qb.andWhere('product.brandId = :brandId', { brandId: query.brandId });
     }
 
+    if (query.taxTypeId) {
+      qb.andWhere('product.taxTypeId = :taxTypeId', { taxTypeId: query.taxTypeId });
+    }
+
+    if (query.unitOfMeasureId) {
+      qb.andWhere('unitOfMeasure.id = :unitOfMeasureId', { unitOfMeasureId: query.unitOfMeasureId });
+    }
+
     const [items, itemCount] = await qb.getManyAndCount();
     const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto: query });
     return new ResponsePaginationDto(items, pageMeta);
@@ -112,6 +120,12 @@ export class ProductService {
     }
     if (query.brandId) {
       qb.andWhere('product.brandId = :brandId', { brandId: query.brandId });
+    }
+    if (query.taxTypeId) {
+      qb.andWhere('product.taxTypeId = :taxTypeId', { taxTypeId: query.taxTypeId });
+    }
+    if (query.unitOfMeasureId) {
+      qb.andWhere('unitOfMeasure.id = :unitOfMeasureId', { unitOfMeasureId: query.unitOfMeasureId });
     }
 
     const [items, itemCount] = await qb.getManyAndCount();

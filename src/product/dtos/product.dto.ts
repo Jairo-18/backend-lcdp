@@ -148,6 +148,20 @@ export class ProductQueryDto extends ParamsPaginationDto {
   @Type(() => Number)
   brandId?: number;
 
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsInt()
+  @IsPositive()
+  @Type(() => Number)
+  taxTypeId?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsInt()
+  @IsPositive()
+  @Type(() => Number)
+  unitOfMeasureId?: number;
+
   @ApiProperty({
     required: false,
     enum: ['name', 'createdAt'],

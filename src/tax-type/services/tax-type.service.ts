@@ -4,10 +4,14 @@ import { TaxTypeRepository } from '../../shared/repositories/tax-type.repository
 import { CreateTaxTypeDto, TaxTypeQueryDto, UpdateTaxTypeDto } from '../dtos/tax-type.dto';
 import { PageMetaDto } from '../../shared/dtos/pageMeta.dto';
 import { ResponsePaginationDto } from '../../shared/dtos/pagination.dto';
+import { ProductRepository } from '../../shared/repositories/product.repository';
 
 @Injectable()
 export class TaxTypeService {
-  constructor(private readonly _repo: TaxTypeRepository) {}
+  constructor(
+    private readonly _repo: TaxTypeRepository,
+    private readonly _productRepo: ProductRepository,
+  ) {}
 
   async create(dto: CreateTaxTypeDto): Promise<TaxType> {
     const existing = await this._repo.findOne({ where: { code: dto.code } });
@@ -53,6 +57,9 @@ export class TaxTypeService {
 
   async remove(id: number): Promise<void> {
     const taxType = await this.findOne(id);
+    const count = await this._productRepo.count({ where: { taxTypeId: id } });
+    if (count > 0)
+      throw new ConflictException(`Este tipo de impuesto está asociado a ${count} producto(s) y no puede eliminarse`);
     await this._repo.remove(taxType);
   }
 }

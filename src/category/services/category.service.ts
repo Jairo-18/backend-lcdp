@@ -5,12 +5,14 @@ import { CategoryQueryDto, CreateCategoryDto, UpdateCategoryDto } from '../dtos/
 import { PageMetaDto } from '../../shared/dtos/pageMeta.dto';
 import { ResponsePaginationDto } from '../../shared/dtos/pagination.dto';
 import { UploadService } from '../../upload/upload.service';
+import { ProductRepository } from '../../shared/repositories/product.repository';
 
 @Injectable()
 export class CategoryService {
   constructor(
     private readonly _repo: CategoryRepository,
     private readonly _upload: UploadService,
+    private readonly _productRepo: ProductRepository,
   ) {}
 
   async create(dto: CreateCategoryDto): Promise<Category> {
@@ -63,6 +65,12 @@ export class CategoryService {
 
   async remove(id: number): Promise<void> {
     const category = await this.findOne(id);
+    const count = await this._productRepo
+      .createQueryBuilder('product')
+      .innerJoin('product.categories', 'category', 'category.id = :id', { id })
+      .getCount();
+    if (count > 0)
+      throw new ConflictException(`Esta categoría está asociada a ${count} producto(s) y no puede eliminarse`);
     category.images.forEach(v => this._upload.deleteVariants(v));
     await this._repo.remove(category);
   }
