@@ -2,6 +2,7 @@ import {
   Body, Controller, Delete, Get, HttpStatus,
   Param, ParseIntPipe, Patch, Post, Query, UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { ProductUC } from '../useCases/product.UC';
@@ -33,6 +34,14 @@ export class ProductController {
   @ApiOperation({ summary: 'Listar productos paginados con filtros opcionales (search, categoryId, brandId)' })
   async findAll(@Query() query: ProductQueryDto): Promise<GetProductsResponseDto> {
     return { statusCode: HttpStatus.OK, data: await this._uc.findAll(query) };
+  }
+
+  @Get('next-code')
+  @Throttle({ default: { ttl: 60000, limit: 20 } })
+  @ApiOperation({ summary: 'Obtener el siguiente código de producto autoincremental' })
+  async nextCode(): Promise<{ statusCode: number; data: { code: string } }> {
+    const code = await this._uc.nextCode();
+    return { statusCode: HttpStatus.OK, data: { code } };
   }
 
   @Get(':id')

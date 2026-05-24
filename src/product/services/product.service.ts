@@ -18,8 +18,18 @@ export class ProductService {
     private readonly _upload: UploadService,
   ) {}
 
+  async nextCode(): Promise<string> {
+    const result = await this._repo
+      .createQueryBuilder('product')
+      .select('MAX(CAST(product.code AS INTEGER))', 'maxCode')
+      .where('product.code ~ :pattern', { pattern: '^[0-9]+$' })
+      .getRawOne<{ maxCode: string | null }>();
+    return String((result?.maxCode ? Number(result.maxCode) : 0) + 1);
+  }
+
   async create(dto: CreateProductDto): Promise<Product> {
     const { presentations, categoryIds, ...productData } = dto;
+    productData.code = await this.nextCode();
     const product = this._repo.create(productData);
 
     product.categories = await this._categoryRepo.findByIds(categoryIds);
@@ -161,6 +171,9 @@ export class ProductService {
     }
 
     Object.assign(product, productData);
+    if (productData.brandId !== undefined) {
+      product.brand = { id: productData.brandId } as any;
+    }
 
     if (categoryIds !== undefined) {
       product.categories = await this._categoryRepo.findByIds(categoryIds);

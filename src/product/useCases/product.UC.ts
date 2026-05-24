@@ -6,6 +6,7 @@ import { CreateProductDto, ProductQueryDto, UpdateProductDto } from '../dtos/pro
 export class ProductUC {
   constructor(private readonly _productService: ProductService) {}
 
+  async nextCode() { return this._productService.nextCode(); }
   async create(dto: CreateProductDto) { return this._productService.create(dto); }
   async findAll(query: ProductQueryDto) { return this._productService.findAll(query); }
   async findAllPublic(query: ProductQueryDto) { return this._productService.findAllPublic(query); }
