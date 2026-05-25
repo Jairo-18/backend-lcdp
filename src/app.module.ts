@@ -22,6 +22,7 @@ import { BackupModule } from './backup/backup.module';
 import { CronJobModule } from './cronJobs/cron.job.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { VideoModule } from './video/video.module';
+import { ColorModule } from './color/color.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { VideoModule } from './video/video.module';
     TaxTypeModule,
     UploadModule,
     VideoModule,
+    ColorModule,
     BackupModule,
     ScheduleModule.forRoot(),
     CronJobModule,

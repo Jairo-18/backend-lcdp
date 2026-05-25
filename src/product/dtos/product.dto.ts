@@ -72,6 +72,14 @@ export class CreateProductDto {
   @Type(() => Number)
   categoryIds: number[];
 
+  @ApiProperty({ example: [1, 2], type: [Number], required: false })
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  @IsPositive({ each: true })
+  @Type(() => Number)
+  colorIds?: number[];
+
   @ApiProperty({ example: 1 })
   @IsInt()
   @IsPositive()
@@ -179,6 +187,13 @@ export class ProductQueryDto extends ParamsPaginationDto {
   @IsPositive()
   @Type(() => Number)
   unitOfMeasureId?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsInt()
+  @IsPositive()
+  @Type(() => Number)
+  colorId?: number;
 
   @ApiProperty({
     required: false,

@@ -27,6 +27,8 @@ import { CategoryRepository } from './repositories/category.repository';
 import { UnitOfMeasureRepository } from './repositories/unit-of-measure.repository';
 import { ProductRepository } from './repositories/product.repository';
 import { ProductPresentationRepository } from './repositories/product-presentation.repository';
+import { Color } from './entities/color.entity';
+import { ColorRepository } from './repositories/color.repository';
 
 @Module({})
 export class SharedModule {
@@ -88,6 +90,7 @@ export class SharedModule {
           ProductImage,
           Organizational,
           TaxType,
+          Color,
         ]),
 
         PassportModule,
@@ -132,6 +135,7 @@ export class SharedModule {
         ProductRepository,
         ProductPresentationRepository,
         TaxTypeRepository,
+        ColorRepository,
       ],
       exports: [
         JwtModule,
@@ -146,6 +150,7 @@ export class SharedModule {
         ProductRepository,
         ProductPresentationRepository,
         TaxTypeRepository,
+        ColorRepository,
       ],
     };
   }

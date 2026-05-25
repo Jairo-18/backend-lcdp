@@ -14,6 +14,7 @@ import { Category } from './category.entity';
 import { Brand } from './brand.entity';
 import { ProductPresentation } from './product-presentation.entity';
 import { TaxType } from './tax-type.entity';
+import { Color } from './color.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -36,6 +37,14 @@ export class Product {
     inverseJoinColumn: { name: 'categoryId', referencedColumnName: 'id' },
   })
   categories: Category[];
+
+  @ManyToMany(() => Color, { eager: false })
+  @JoinTable({
+    name: 'product_colors',
+    joinColumn:        { name: 'productId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'colorId',   referencedColumnName: 'id' },
+  })
+  colors: Color[];
 
   @ManyToOne(() => Brand, { nullable: false })
   @JoinColumn({ name: 'brandId' })

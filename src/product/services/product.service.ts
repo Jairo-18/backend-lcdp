@@ -4,6 +4,7 @@ import { ProductImage } from '../../shared/entities/product-image.entity';
 import { ProductRepository } from '../../shared/repositories/product.repository';
 import { ProductPresentationRepository } from '../../shared/repositories/product-presentation.repository';
 import { CategoryRepository } from '../../shared/repositories/category.repository';
+import { ColorRepository } from '../../shared/repositories/color.repository';
 import { CreateProductDto, ProductQueryDto, UpdateProductDto } from '../dtos/product.dto';
 import { PageMetaDto } from '../../shared/dtos/pageMeta.dto';
 import { ResponsePaginationDto } from '../../shared/dtos/pagination.dto';
@@ -15,6 +16,7 @@ export class ProductService {
     private readonly _repo: ProductRepository,
     private readonly _presentationRepo: ProductPresentationRepository,
     private readonly _categoryRepo: CategoryRepository,
+    private readonly _colorRepo: ColorRepository,
     private readonly _upload: UploadService,
   ) {}
 
@@ -28,11 +30,12 @@ export class ProductService {
   }
 
   async create(dto: CreateProductDto): Promise<Product> {
-    const { presentations, categoryIds, ...productData } = dto;
+    const { presentations, categoryIds, colorIds, ...productData } = dto;
     productData.code = await this.nextCode();
     const product = this._repo.create(productData);
 
     product.categories = await this._categoryRepo.findByIds(categoryIds);
+    product.colors = colorIds?.length ? await this._colorRepo.findByIds(colorIds) : [];
 
     if (presentations?.length) {
       product.presentations = presentations.map((p) => {
@@ -61,6 +64,7 @@ export class ProductService {
     const qb = this._repo
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.categories', 'category')
+      .leftJoinAndSelect('product.colors', 'color')
       .leftJoinAndSelect('product.brand', 'brand')
       .leftJoinAndSelect('product.taxType', 'taxType')
       .leftJoinAndSelect('product.presentations', 'presentations')
@@ -109,6 +113,7 @@ export class ProductService {
     const qb = this._repo
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.categories', 'category')
+      .leftJoinAndSelect('product.colors', 'color')
       .leftJoinAndSelect('product.brand', 'brand')
       .leftJoinAndSelect('product.taxType', 'taxType')
       .leftJoinAndSelect('product.presentations', 'presentations')
@@ -137,6 +142,9 @@ export class ProductService {
     if (query.unitOfMeasureId) {
       qb.andWhere('unitOfMeasure.id = :unitOfMeasureId', { unitOfMeasureId: query.unitOfMeasureId });
     }
+    if (query.colorId) {
+      qb.andWhere('color.id = :colorId', { colorId: query.colorId });
+    }
 
     const [items, itemCount] = await qb.getManyAndCount();
     const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto: query });
@@ -148,6 +156,7 @@ export class ProductService {
       where: { id },
       relations: [
         'categories',
+        'colors',
         'brand',
         'taxType',
         'presentations',
@@ -161,7 +170,7 @@ export class ProductService {
 
   async update(id: number, dto: UpdateProductDto): Promise<Product> {
     const product = await this.findOne(id);
-    const { presentations, categoryIds, ...productData } = dto;
+    const { presentations, categoryIds, colorIds, ...productData } = dto;
 
     if ('technicalSheet' in productData && product.technicalSheet && productData.technicalSheet !== product.technicalSheet) {
       this._upload.deleteFile(product.technicalSheet);
@@ -177,6 +186,10 @@ export class ProductService {
 
     if (categoryIds !== undefined) {
       product.categories = await this._categoryRepo.findByIds(categoryIds);
+    }
+
+    if (colorIds !== undefined) {
+      product.colors = colorIds.length ? await this._colorRepo.findByIds(colorIds) : [];
     }
 
     if (presentations !== undefined) {
