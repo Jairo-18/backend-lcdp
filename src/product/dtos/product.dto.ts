@@ -12,7 +12,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { HttpStatus } from '@nestjs/common';
 import { BaseResponseDto } from '../../shared/dtos/response.dto';
 import {
@@ -104,6 +104,11 @@ export class CreateProductDto {
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
+
+  @ApiProperty({ required: false, default: false })
+  @IsOptional()
+  @IsBoolean()
+  isPromotion?: boolean;
 
   @ApiProperty({ required: false, description: 'URL del PDF de ficha técnica' })
   @IsOptional()
@@ -203,6 +208,12 @@ export class ProductQueryDto extends ParamsPaginationDto {
   @IsOptional()
   @IsIn(['name', 'createdAt'])
   orderBy?: 'name' | 'createdAt';
+
+  @ApiProperty({ required: false, description: 'Filtrar solo productos en promoción' })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
+  isPromotion?: boolean;
 }
 
 export class GetProductResponseDto implements BaseResponseDto {

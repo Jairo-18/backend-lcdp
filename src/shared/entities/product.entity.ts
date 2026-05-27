@@ -66,6 +66,9 @@ export class Product {
   @Column('boolean', { default: true })
   isActive: boolean;
 
+  @Column('boolean', { default: false })
+  isPromotion: boolean;
+
   @Column('varchar', { length: 500, nullable: true })
   technicalSheet: string;
 

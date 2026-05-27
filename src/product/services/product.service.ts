@@ -120,7 +120,10 @@ export class ProductService {
       .leftJoinAndSelect('presentations.unitOfMeasure', 'unitOfMeasure')
       .leftJoinAndSelect('presentations.images', 'images')
       .where('product.isActive = :isActive', { isActive: true })
-      .orderBy(orderCol, orderDir)
+      .orderBy('product.isPromotion', 'DESC')
+      .addOrderBy(orderCol, orderDir)
+      .addOrderBy('presentations.priceSale', 'DESC', 'NULLS LAST')
+      .addOrderBy('images.order', 'ASC')
       .skip(skip)
       .take(perPage);
 
@@ -144,6 +147,9 @@ export class ProductService {
     }
     if (query.colorId) {
       qb.andWhere('color.id = :colorId', { colorId: query.colorId });
+    }
+    if (query.isPromotion !== undefined) {
+      qb.andWhere('product.isPromotion = :isPromotion', { isPromotion: query.isPromotion });
     }
 
     const [items, itemCount] = await qb.getManyAndCount();
