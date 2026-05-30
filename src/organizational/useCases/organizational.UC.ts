@@ -37,10 +37,10 @@ export class OrganizationalUC {
   async bootstrap() {
     const [org, categories, units, brands, taxTypes] = await Promise.all([
       this._orgService.findOne().catch(() => null),
-      this._categoryRepo.find({ where: { isActive: true }, select: ['id', 'name', 'code', 'images'], order: { name: 'ASC' } }),
-      this._unitRepo.find({ where: { isActive: true }, select: ['id', 'name', 'code'], order: { name: 'ASC' } }),
-      this._brandRepo.find({ where: { isActive: true }, select: ['id', 'name', 'code', 'images'], order: { name: 'ASC' } }),
-      this._taxTypeRepo.find({ where: { isActive: true }, select: ['id', 'name', 'code'], order: { name: 'ASC' } }),
+      this._categoryRepo.find({ select: ['id', 'name', 'code', 'images', 'isActive'], order: { name: 'ASC' } }),
+      this._unitRepo.find({ select: ['id', 'name', 'code', 'isActive'], order: { name: 'ASC' } }),
+      this._brandRepo.find({ select: ['id', 'name', 'code', 'images', 'isActive'], order: { name: 'ASC' } }),
+      this._taxTypeRepo.find({ select: ['id', 'name', 'code', 'isActive'], order: { name: 'ASC' } }),
     ]);
 
     return { org, categories, units, brands, taxTypes };
