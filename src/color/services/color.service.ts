@@ -8,10 +8,14 @@ import { ColorRepository } from '../../shared/repositories/color.repository';
 import { CreateColorDto, ColorQueryDto, UpdateColorDto } from '../dtos/color.dto';
 import { PageMetaDto } from '../../shared/dtos/pageMeta.dto';
 import { ResponsePaginationDto } from '../../shared/dtos/pagination.dto';
+import { ProductRepository } from '../../shared/repositories/product.repository';
 
 @Injectable()
 export class ColorService {
-  constructor(private readonly _repo: ColorRepository) {}
+  constructor(
+    private readonly _repo: ColorRepository,
+    private readonly _productRepo: ProductRepository,
+  ) {}
 
   async create(dto: CreateColorDto): Promise<Color> {
     if (dto.code) {
@@ -60,6 +64,14 @@ export class ColorService {
     if (dto.code && dto.code !== color.code) {
       const existing = await this._repo.findOne({ where: { code: dto.code } });
       if (existing) throw new ConflictException(`Ya existe un color con el código "${dto.code}"`);
+    }
+    if (dto.isActive === false && color.isActive) {
+      const count = await this._productRepo
+        .createQueryBuilder('product')
+        .innerJoin('product.colors', 'color', 'color.id = :id', { id })
+        .getCount();
+      if (count > 0)
+        throw new ConflictException(`No puedes desactivar este color porque está en uso en ${count} producto(s)`);
     }
     Object.assign(color, dto);
     await this._repo.save(color);

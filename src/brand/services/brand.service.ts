@@ -53,6 +53,11 @@ export class BrandService {
       const existing = await this._repo.findOne({ where: { code: dto.code } });
       if (existing) throw new ConflictException(`Ya existe una marca con el código "${dto.code}"`);
     }
+    if (dto.isActive === false && brand.isActive) {
+      const count = await this._productRepo.count({ where: { brandId: id } });
+      if (count > 0)
+        throw new ConflictException(`No puedes desactivar esta marca porque está en uso en ${count} producto(s)`);
+    }
     if (dto.images !== undefined) {
       const removed = brand.images.filter(
         old => !dto.images!.some(n => n.thumb === old.thumb),

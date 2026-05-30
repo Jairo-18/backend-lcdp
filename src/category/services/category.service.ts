@@ -53,6 +53,14 @@ export class CategoryService {
       const existing = await this._repo.findOne({ where: { code: dto.code } });
       if (existing) throw new ConflictException(`Ya existe una categoría con el código "${dto.code}"`);
     }
+    if (dto.isActive === false && category.isActive) {
+      const count = await this._productRepo
+        .createQueryBuilder('product')
+        .innerJoin('product.categories', 'category', 'category.id = :id', { id })
+        .getCount();
+      if (count > 0)
+        throw new ConflictException(`No puedes desactivar esta categoría porque está en uso en ${count} producto(s)`);
+    }
     if (dto.images !== undefined) {
       const removed = category.images.filter(
         old => !dto.images!.some(n => n.thumb === old.thumb),
