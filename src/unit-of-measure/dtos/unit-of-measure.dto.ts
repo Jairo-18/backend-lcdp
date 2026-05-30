@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { HttpStatus } from '@nestjs/common';
 import { BaseResponseDto } from '../../shared/dtos/response.dto';
 import { UnitOfMeasure } from '../../shared/entities/unit-of-measure.entity';
@@ -14,6 +14,11 @@ export class CreateUnitOfMeasureDto {
   @IsString()
   @IsNotEmpty()
   code: string;
+
+  @ApiProperty({ required: false, default: true })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 }
 
 export class UpdateUnitOfMeasureDto extends PartialType(CreateUnitOfMeasureDto) {}

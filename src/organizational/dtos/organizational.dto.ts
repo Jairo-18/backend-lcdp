@@ -51,6 +51,7 @@ export class CreateOrganizationalDto {
   @ApiProperty({ required: false }) @IsOptional() @IsString() metaTitle?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() metaDescription?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() metaKeywords?: string;
+  @ApiProperty({ required: false, description: 'URL de YouTube para la página Cómo pedir' }) @IsOptional() @IsString() howToOrderVideoUrl?: string;
 
   @ApiProperty({ required: false, type: [ImageVariantDto] })
   @IsOptional()

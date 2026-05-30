@@ -17,6 +17,9 @@ export class UnitOfMeasure {
   @Column('varchar', { length: 20, unique: true })
   code: string;
 
+  @Column('boolean', { default: true })
+  isActive: boolean;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 

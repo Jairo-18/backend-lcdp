@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { HttpStatus } from '@nestjs/common';
 import { BaseResponseDto } from '../../shared/dtos/response.dto';
 import { TaxType } from '../../shared/entities/tax-type.entity';
@@ -15,6 +15,11 @@ export class CreateTaxTypeDto {
   @IsString()
   @IsNotEmpty()
   code: string;
+
+  @ApiProperty({ required: false, default: true })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 }
 
 export class UpdateTaxTypeDto extends PartialType(CreateTaxTypeDto) {}

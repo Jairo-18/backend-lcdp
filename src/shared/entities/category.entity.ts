@@ -21,6 +21,9 @@ export class Category {
   @Column('jsonb', { default: [] })
   images: ImageVariant[];
 
+  @Column('boolean', { default: true })
+  isActive: boolean;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 

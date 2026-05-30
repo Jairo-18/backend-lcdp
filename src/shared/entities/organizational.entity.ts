@@ -108,6 +108,9 @@ export class Organizational {
   @Column('varchar', { length: 500, nullable: true })
   metaKeywords?: string;
 
+  @Column('varchar', { length: 500, nullable: true })
+  howToOrderVideoUrl?: string;
+
   @Column('jsonb', { default: [] })
   bannerImages: ImageVariant[];
 

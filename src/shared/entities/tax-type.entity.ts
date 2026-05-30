@@ -17,6 +17,9 @@ export class TaxType {
   @Column('varchar', { length: 50, unique: true })
   code: string;
 
+  @Column('boolean', { default: true })
+  isActive: boolean;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 

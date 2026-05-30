@@ -23,6 +23,7 @@ import { CronJobModule } from './cronJobs/cron.job.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { VideoModule } from './video/video.module';
 import { ColorModule } from './color/color.module';
+import { CertificationModule } from './certification/certification.module';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { ColorModule } from './color/color.module';
     UploadModule,
     VideoModule,
     ColorModule,
+    CertificationModule,
     BackupModule,
     ScheduleModule.forRoot(),
     CronJobModule,

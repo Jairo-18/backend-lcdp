@@ -26,6 +26,9 @@ export class Video {
   @Column('varchar', { length: 500, nullable: true })
   thumbnailUrl: string;
 
+  @Column('boolean', { default: true })
+  isActive: boolean;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 

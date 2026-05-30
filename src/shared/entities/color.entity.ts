@@ -23,6 +23,9 @@ export class Color {
   @Column('varchar', { length: 50, nullable: true, unique: true })
   code: string | null;
 
+  @Column('boolean', { default: true })
+  isActive: boolean;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
