@@ -71,6 +71,7 @@ export class ProductService {
       .leftJoinAndSelect('presentations.unitOfMeasure', 'unitOfMeasure')
       .leftJoinAndSelect('presentations.images', 'images')
       .orderBy(orderCol, orderDir)
+      .addOrderBy('images.order', 'ASC')
       .skip(skip)
       .take(perPage);
 
@@ -157,18 +158,18 @@ export class ProductService {
   }
 
   async findOne(id: number): Promise<Product> {
-    const product = await this._repo.findOne({
-      where: { id },
-      relations: [
-        'categories',
-        'colors',
-        'brand',
-        'taxType',
-        'presentations',
-        'presentations.unitOfMeasure',
-        'presentations.images',
-      ],
-    });
+    const product = await this._repo
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.categories', 'category')
+      .leftJoinAndSelect('product.colors', 'color')
+      .leftJoinAndSelect('product.brand', 'brand')
+      .leftJoinAndSelect('product.taxType', 'taxType')
+      .leftJoinAndSelect('product.presentations', 'presentations')
+      .leftJoinAndSelect('presentations.unitOfMeasure', 'unitOfMeasure')
+      .leftJoinAndSelect('presentations.images', 'images')
+      .addOrderBy('images.order', 'ASC')
+      .where('product.id = :id', { id })
+      .getOne();
     if (!product) throw new NotFoundException('Producto no encontrado');
     return product;
   }
