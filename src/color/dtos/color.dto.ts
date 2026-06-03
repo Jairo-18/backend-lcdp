@@ -1,6 +1,8 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
+  IsArray,
   IsBoolean,
+  IsIn,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -39,6 +41,12 @@ export class CreateColorDto {
   @IsString()
   @MaxLength(50)
   code?: string;
+
+  @ApiProperty({ example: ['pared', 'techo'], required: false, type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsIn(['piso', 'pared', 'techo'], { each: true })
+  surfaces?: string[];
 
   @ApiProperty({ required: false, default: true })
   @IsOptional()
