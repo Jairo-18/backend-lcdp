@@ -41,6 +41,13 @@ export class CreatePresentationDto {
   @Type(() => Number)
   priceSale?: number;
 
+  @ApiProperty({ required: false, example: 14, description: 'Rendimiento en m² por unidad' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Type(() => Number)
+  rendimiento?: number;
+
   @ApiProperty({ type: [ImageVariantDto], required: false })
   @IsOptional()
   @IsArray()

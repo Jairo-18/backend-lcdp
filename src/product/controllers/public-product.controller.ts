@@ -16,6 +16,12 @@ export class PublicProductController {
     return { statusCode: HttpStatus.OK, data: await this._uc.findAllPublic(query) };
   }
 
+  @Get('calculadora')
+  @ApiOperation({ summary: 'Productos con rendimiento para la calculadora (sin auth)' })
+  async calculadora() {
+    return { statusCode: HttpStatus.OK, data: await this._uc.findCalculadora() };
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Obtener producto activo por ID (sin auth)' })
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<GetProductResponseDto> {

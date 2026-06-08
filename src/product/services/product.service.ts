@@ -157,6 +157,23 @@ export class ProductService {
     return new ResponsePaginationDto(items, pageMeta);
   }
 
+  async findCalculadora(): Promise<Product[]> {
+    return this._repo
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.categories', 'category')
+      .leftJoinAndSelect('product.brand', 'brand')
+      .leftJoinAndSelect('product.presentations', 'presentations')
+      .leftJoinAndSelect('presentations.unitOfMeasure', 'unitOfMeasure')
+      .leftJoinAndSelect('presentations.images', 'images')
+      .where('product.isActive = :isActive', { isActive: true })
+      .andWhere('presentations.rendimiento IS NOT NULL')
+      .andWhere('presentations.rendimiento > 0')
+      .orderBy('product.name', 'ASC')
+      .addOrderBy('presentations.priceSale', 'DESC', 'NULLS LAST')
+      .addOrderBy('images.order', 'ASC')
+      .getMany();
+  }
+
   async findOne(id: number): Promise<Product> {
     const product = await this._repo
       .createQueryBuilder('product')

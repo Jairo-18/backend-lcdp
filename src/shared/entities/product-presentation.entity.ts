@@ -40,6 +40,9 @@ export class ProductPresentation {
   @Column('decimal', { precision: 12, scale: 2, nullable: true })
   priceSale: number | null;
 
+  @Column('decimal', { precision: 8, scale: 2, nullable: true })
+  rendimiento: number | null;
+
   @OneToMany(() => ProductImage, (image) => image.presentation, {
     cascade: true,
   })
