@@ -73,6 +73,29 @@ export class CreateOrganizationalDto {
   @ValidateNested({ each: true })
   @Type(() => VideoVariantDto)
   aboutVideos?: VideoVariantDto[];
+
+  @ApiProperty({ required: false, type: [ImageVariantDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ImageVariantDto)
+  heroImages?: ImageVariantDto[];
+
+  @ApiProperty({ required: false, type: [ImageVariantDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ImageVariantDto)
+  aboutImages?: ImageVariantDto[];
+
+  @ApiProperty({ required: false }) @IsOptional() @IsString() heroLine1?: string;
+  @ApiProperty({ required: false }) @IsOptional() @IsString() heroLine2?: string;
+
+  @ApiProperty({ required: false, type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  heroColors?: string[];
 }
 
 export class UpdateOrganizationalDto extends PartialType(CreateOrganizationalDto) {

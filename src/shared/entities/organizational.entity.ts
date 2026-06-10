@@ -120,6 +120,21 @@ export class Organizational {
   @Column('jsonb', { default: [] })
   aboutVideos: VideoVariant[];
 
+  @Column('jsonb', { default: [] })
+  heroImages: ImageVariant[];
+
+  @Column('jsonb', { default: [] })
+  aboutImages: ImageVariant[];
+
+  @Column('varchar', { length: 200, nullable: true })
+  heroLine1?: string;
+
+  @Column('varchar', { length: 200, nullable: true })
+  heroLine2?: string;
+
+  @Column('jsonb', { default: [] })
+  heroColors: string[];
+
   @Column({ type: 'boolean', default: true })
   status: boolean;
 
